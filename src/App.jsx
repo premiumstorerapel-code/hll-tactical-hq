@@ -7,6 +7,7 @@ import MapViewer from './components/MapViewer';
 import StrategicPlaybookPanel from './components/StrategicPlaybookPanel';
 import TacticalAdvisor from './components/TacticalAdvisor';
 import TacticalAcademyPanel from './components/TacticalAcademyPanel';
+import TacticalGuideMaster from './components/TacticalGuideMaster';
 import TankCrewHUD from './components/TankCrewHUD';
 import ArtilleryWidget from './components/ArtilleryWidget';
 import MapTools from './components/MapTools';
@@ -14,7 +15,7 @@ import POIModal from './components/POIModal';
 
 import { 
   Shield, Crosshair, Target, Volume2, VolumeX, 
-  Map, Monitor, ChevronLeft, ChevronRight, Languages, BookOpen, Users 
+  Map, Monitor, ChevronLeft, ChevronRight, Languages, BookOpen, Users, Swords, Compass 
 } from 'lucide-react';
 import { sound } from './utils/audio';
 import { translations } from './utils/i18n';
@@ -30,10 +31,11 @@ const AVAILABLE_MAPS = {
 export default function App() {
   const [lang, setLang] = useState('es');
   const [selectedMapKey, setSelectedMapKey] = useState('carentan');
+  const [gameMode, setGameMode] = useState('warfare'); // 'warfare' | 'offensive'
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [crtEnabled, setCrtEnabled] = useState(false);
   const [advisorCollapsed, setAdvisorCollapsed] = useState(false);
-  const [activeTabMode, setActiveTabMode] = useState('strategy'); // 'strategy' | 'advisor' | 'tank'
+  const [activeTabMode, setActiveTabMode] = useState('strategy'); // 'strategy' | 'guide' | 'academy' | 'advisor' | 'tank'
 
   const t = translations[lang] || translations.es;
 
@@ -334,6 +336,37 @@ export default function App() {
               <option value="foy" className="bg-bunker-900">FOY (INVIERNO 1984m)</option>
             </select>
           </div>
+
+          {/* Game Mode Selector */}
+          <div className="flex items-center space-x-1 bg-bunker-950 px-2 py-1 rounded border border-bunker-800">
+            <span className="text-[10px] text-slate-400 font-bold uppercase hidden md:inline">MODO:</span>
+            <button
+              onClick={() => {
+                setGameMode('warfare');
+                sound.playRadioClick();
+              }}
+              className={`px-2 py-0.5 rounded text-[11px] font-bold font-mono transition ${
+                gameMode === 'warfare'
+                  ? 'bg-tactical-amber text-black font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              WARFARE (50v50)
+            </button>
+            <button
+              onClick={() => {
+                setGameMode('offensive');
+                sound.playRadioClick();
+              }}
+              className={`px-2 py-0.5 rounded text-[11px] font-bold font-mono transition ${
+                gameMode === 'offensive'
+                  ? 'bg-tactical-amber text-black font-black'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              OFENSIVA
+            </button>
+          </div>
         </div>
 
         {/* Center: Tactical Intel Navigation Tabs */}
@@ -349,8 +382,23 @@ export default function App() {
                 : 'text-slate-400 hover:text-white'
             }`}
           >
+            <Map className="w-3.5 h-3.5" />
+            <span>MAPA & BASES</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTabMode('guide');
+              sound.playRadioClick();
+            }}
+            className={`px-3 py-1 text-xs font-display font-bold tracking-wider rounded transition flex items-center space-x-1.5 ${
+              activeTabMode === 'guide'
+                ? 'bg-tactical-amber text-black shadow font-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>GUÍA DE BASES</span>
+            <span>GUÍA TÁCTICA MAESTRA</span>
           </button>
 
           <button
@@ -365,7 +413,7 @@ export default function App() {
             }`}
           >
             <Users className="w-3.5 h-3.5" />
-            <span>ACADEMIA & FORMACIONES</span>
+            <span>SIMULADOR ESCUADRA</span>
           </button>
 
           <button
@@ -380,7 +428,7 @@ export default function App() {
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
-            <span>BLINDAJE Y TANQUES</span>
+            <span>BLINDAJE</span>
           </button>
 
           <button
@@ -395,7 +443,7 @@ export default function App() {
             }`}
           >
             <Target className="w-3.5 h-3.5" />
-            <span>RADAR Y 200M</span>
+            <span>RADAR 200M</span>
           </button>
         </div>
 
@@ -451,8 +499,19 @@ export default function App() {
         </div>
       )}
 
-      {/* MAIN WORKSPACE: Map + Strategic Panel Sidebar */}
-      <div className="flex-1 relative flex overflow-hidden">
+      {/* FULLSCREEN TACTICAL MASTER GUIDE (When Guide Mode is active) */}
+      {activeTabMode === 'guide' ? (
+        <div className="flex-1 h-full overflow-hidden">
+          <TacticalGuideMaster
+            selectedBase={selectedBase}
+            onDeploySquadFormation={handleDeploySquadFormation}
+            onSwitchToMap={() => setActiveTabMode('strategy')}
+            t={t}
+          />
+        </div>
+      ) : (
+        /* MAIN WORKSPACE: Map + Strategic Panel Sidebar */
+        <div className="flex-1 relative flex overflow-hidden">
         
         {/* Leaflet Map Surface */}
         <div className="flex-1 relative h-full">
@@ -572,6 +631,7 @@ export default function App() {
         </aside>
 
       </div>
+      )}
 
       {/* POI Modal */}
       {selectedPOI && (

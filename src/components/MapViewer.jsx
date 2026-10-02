@@ -395,7 +395,7 @@ export default function MapViewer({
 
     // 1. Recommended Garrisons (with 200m exclusionary circles)
     if (layerFilters.garrisons && plan.garrisons) {
-      plan.garrisons.forEach((g, idx) => {
+      plan.garrisons.forEach((g) => {
         L.circle(g.coordinates, {
           radius: 200,
           color: '#10b981',
@@ -405,23 +405,16 @@ export default function MapViewer({
           fillOpacity: 0.08
         }).addTo(stratLayer);
 
-        const html = `
-          <div style="background: #042419; border: 2px solid #34d399; padding: 3px 6px; border-radius: 4px; 
-                      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; color: #fff; 
-                      box-shadow: 0 0 14px rgba(16,185,129,0.7); white-space: nowrap; display: flex; align-items: center; gap: 4px;">
-            <span>🛡️</span>
-            <span>${g.name}</span>
-          </div>
-        `;
-        const icon = L.divIcon({ className: 'strat-garry', html, iconAnchor: [30, 14] });
+        const html = getHLLMarkerHTML('friendly_garrison', g.name);
+        const icon = L.divIcon({ className: 'strat-garry', html, iconSize: [36, 48], iconAnchor: [18, 24] });
         const m = L.marker(g.coordinates, { icon }).addTo(stratLayer);
-        m.bindPopup(`<strong>${g.name}</strong><br/>${g.description}`);
+        m.bindPopup(`<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #111;"><strong>🛡️ ${g.name}</strong><br/>${g.description}</div>`);
       });
     }
 
     // 2. Machine Gun Nests with Firing Arc Cones
     if (layerFilters.mgs && plan.mgSpots) {
-      plan.mgSpots.forEach((mg, idx) => {
+      plan.mgSpots.forEach((mg) => {
         // Draw 140m firing sector cone polygon
         const center = mg.coordinates;
         const length = 140;
@@ -439,70 +432,46 @@ export default function MapViewer({
 
         L.polygon(conePoints, {
           color: '#f59e0b',
-          weight: 1,
+          weight: 1.2,
           fillColor: '#f59e0b',
-          fillOpacity: 0.18,
+          fillOpacity: 0.16,
           dashArray: '3, 3'
         }).addTo(stratLayer);
 
-        const html = `
-          <div style="background: #3b2308; border: 2px solid #f59e0b; padding: 2px 6px; border-radius: 4px; 
-                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
-                      box-shadow: 0 0 12px rgba(245,158,11,0.6); white-space: nowrap;">
-            💥 ${mg.name}
-          </div>
-        `;
-        const icon = L.divIcon({ className: 'strat-mg', html, iconAnchor: [20, 10] });
+        const html = getHLLMarkerHTML('squad_mg', mg.name);
+        const icon = L.divIcon({ className: 'strat-mg', html, iconSize: [34, 46], iconAnchor: [17, 23] });
         const m = L.marker(mg.coordinates, { icon }).addTo(stratLayer);
-        m.bindPopup(`<strong>${mg.name}</strong><br/>${mg.description}`);
+        m.bindPopup(`<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #111;"><strong>${mg.name}</strong><br/>${mg.description}</div>`);
       });
     }
 
     // 3. Sniper Vantage Towers
     if (layerFilters.snipers && plan.sniperSpots) {
-      plan.sniperSpots.forEach((sn, idx) => {
-        const html = `
-          <div style="background: #082138; border: 2px solid #38bdf8; padding: 2px 6px; border-radius: 4px; 
-                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
-                      box-shadow: 0 0 12px rgba(56,189,248,0.7); white-space: nowrap;">
-            🎯 ${sn.name}
-          </div>
-        `;
-        const icon = L.divIcon({ className: 'strat-sniper', html, iconAnchor: [20, 10] });
+      plan.sniperSpots.forEach((sn) => {
+        const html = getHLLMarkerHTML('recon_unit', sn.name);
+        const icon = L.divIcon({ className: 'strat-sniper', html, iconSize: [34, 46], iconAnchor: [17, 23] });
         const m = L.marker(sn.coordinates, { icon }).addTo(stratLayer);
-        m.bindPopup(`<strong>${sn.name}</strong><br/>${sn.description}`);
+        m.bindPopup(`<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #111;"><strong>${sn.name}</strong><br/>${sn.description}</div>`);
       });
     }
 
     // 4. Tanks Hull-Down Positions
     if (layerFilters.tanks && plan.tankSpots) {
-      plan.tankSpots.forEach((tk, idx) => {
-        const html = `
-          <div style="background: #0f2c42; border: 2px solid #60a5fa; padding: 2px 6px; border-radius: 4px; 
-                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
-                      box-shadow: 0 0 12px rgba(96,165,250,0.6); white-space: nowrap;">
-            🚜 ${tk.name}
-          </div>
-        `;
-        const icon = L.divIcon({ className: 'strat-tank', html, iconAnchor: [20, 10] });
+      plan.tankSpots.forEach((tk) => {
+        const html = getHLLMarkerHTML('friendly_tank', tk.name);
+        const icon = L.divIcon({ className: 'strat-tank', html, iconSize: [36, 48], iconAnchor: [18, 24] });
         const m = L.marker(tk.coordinates, { icon }).addTo(stratLayer);
-        m.bindPopup(`<strong>${tk.name}</strong><br/>${tk.description}`);
+        m.bindPopup(`<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #111;"><strong>${tk.name}</strong><br/>${tk.description}</div>`);
       });
     }
 
     // 5. AT Mine Bottlenecks
     if (layerFilters.mines && plan.atMines) {
-      plan.atMines.forEach((mine, idx) => {
-        const html = `
-          <div style="background: #3b0909; border: 2px solid #ef4444; padding: 2px 6px; border-radius: 4px; 
-                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
-                      box-shadow: 0 0 12px rgba(239,68,68,0.7); white-space: nowrap;">
-            🛑 ${mine.name}
-          </div>
-        `;
-        const icon = L.divIcon({ className: 'strat-mine', html, iconAnchor: [20, 10] });
+      plan.atMines.forEach((mine) => {
+        const html = getHLLMarkerHTML('squad_at', mine.name);
+        const icon = L.divIcon({ className: 'strat-mine', html, iconSize: [34, 46], iconAnchor: [17, 23] });
         const m = L.marker(mine.coordinates, { icon }).addTo(stratLayer);
-        m.bindPopup(`<strong>${mine.name}</strong><br/>${mine.description}`);
+        m.bindPopup(`<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #111;"><strong>${mine.name}</strong><br/>${mine.description}</div>`);
       });
     }
 
