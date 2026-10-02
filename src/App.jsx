@@ -6,6 +6,7 @@ import foyData from './data/maps/foy.json';
 import MapViewer from './components/MapViewer';
 import StrategicPlaybookPanel from './components/StrategicPlaybookPanel';
 import TacticalAdvisor from './components/TacticalAdvisor';
+import TacticalAcademyPanel from './components/TacticalAcademyPanel';
 import TankCrewHUD from './components/TankCrewHUD';
 import ArtilleryWidget from './components/ArtilleryWidget';
 import MapTools from './components/MapTools';
@@ -13,7 +14,7 @@ import POIModal from './components/POIModal';
 
 import { 
   Shield, Crosshair, Target, Volume2, VolumeX, 
-  Map, Monitor, ChevronLeft, ChevronRight, Languages, BookOpen 
+  Map, Monitor, ChevronLeft, ChevronRight, Languages, BookOpen, Users 
 } from 'lucide-react';
 import { sound } from './utils/audio';
 import { translations } from './utils/i18n';
@@ -163,6 +164,30 @@ export default function App() {
     }
 
     setMarkers(prev => [...prev, ...deployedMarkers]);
+  };
+
+  // Deploy 6-man Squad Formation into interactive map markers
+  const handleDeploySquadFormation = (formation, baseCoords) => {
+    if (!formation || !formation.members) return;
+    sound.playAbilitySound();
+
+    const centerLat = baseCoords ? baseCoords[0] - 120 : 1000;
+    const centerLng = baseCoords ? baseCoords[1] : 1000;
+
+    const squadMarkers = formation.members.map((member, idx) => ({
+      id: `squad_member_${Date.now()}_${idx}`,
+      name: member.name,
+      weapon: member.weapon,
+      roleNote: member.note,
+      type: `squad_${member.roleId}`,
+      coordinates: [
+        Math.round(centerLat + member.pos[0] * 1.5),
+        Math.round(centerLng + member.pos[1] * 1.5)
+      ],
+      team: 'us'
+    }));
+
+    setMarkers(prev => [...prev, ...squadMarkers]);
   };
 
   const handleAddMarker = (coords, type) => {
@@ -325,7 +350,22 @@ export default function App() {
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>GUÍA DE ATAQUE Y DEFENSA</span>
+            <span>GUÍA DE BASES</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTabMode('academy');
+              sound.playRadioClick();
+            }}
+            className={`px-3 py-1 text-xs font-display font-bold tracking-wider rounded transition flex items-center space-x-1.5 ${
+              activeTabMode === 'academy'
+                ? 'bg-tactical-amber text-black shadow font-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>ACADEMIA & FORMACIONES</span>
           </button>
 
           <button
@@ -470,7 +510,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* SIDEBAR: Strategic Playbook Panel or Tactical Advisor */}
+        {/* SIDEBAR: Strategic Playbook Panel, Tactical Academy, or Advisor */}
         <aside className={`${advisorCollapsed ? 'w-0' : 'w-80 sm:w-96'} transition-all duration-200 shrink-0 h-full overflow-hidden z-20 shadow-2xl`}>
           {activeTabMode === 'strategy' && (
             <div className="h-full overflow-y-auto">
@@ -484,6 +524,16 @@ export default function App() {
                 onDeployStrategyToMap={handleDeployStrategyToMap}
                 strongpoints={strongpoints}
                 onSelectBase={sp => setSelectedBase(sp)}
+                t={t}
+              />
+            </div>
+          )}
+
+          {activeTabMode === 'academy' && (
+            <div className="h-full overflow-y-auto">
+              <TacticalAcademyPanel
+                selectedBase={selectedBase}
+                onDeploySquadFormation={handleDeploySquadFormation}
                 t={t}
               />
             </div>

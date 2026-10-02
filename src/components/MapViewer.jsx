@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { calculateDistance, calculateBearing, getGridKeypad } from '../engine/geometry';
-import { getHLLMarkerHTML } from './HLLIcons';
+import { getHLLMarkerHTML, getHLLBaseMarkerHTML } from './HLLIcons';
 import { sound } from '../utils/audio';
 
 export default function MapViewer({
@@ -284,40 +284,55 @@ export default function MapViewer({
       const isSelected = selectedBase?.id === poi.id;
 
       if (isStrongpoint) {
+        // Capture circle (50m cap radius)
         L.circle(poi.coordinates, {
           radius: 50,
           color: isSelected ? '#f59e0b' : '#3b82f6',
-          weight: isSelected ? 3 : 1.5,
+          weight: isSelected ? 3 : 1.8,
           fillColor: isSelected ? '#f59e0b' : '#3b82f6',
-          fillOpacity: isSelected ? 0.25 : 0.12,
+          fillOpacity: isSelected ? 0.22 : 0.12,
           dashArray: isSelected ? '0' : '4, 4'
         }).addTo(poisLayer);
 
         if (isSelected) {
+          // 1. Prohibited Garrison Zone (<100m) - Enemy proximity locks garrison spawn
+          L.circle(poi.coordinates, {
+            radius: 100,
+            color: '#ef4444',
+            weight: 1.5,
+            dashArray: '4, 6',
+            fillColor: '#ef4444',
+            fillOpacity: 0.05
+          }).addTo(poisLayer);
+
+          // 2. Optimal Attack Garrison Sweetspot Band (160m - 180m)
+          L.circle(poi.coordinates, {
+            radius: 180,
+            color: '#10b981',
+            weight: 2,
+            dashArray: '6, 6',
+            fillColor: '#10b981',
+            fillOpacity: 0.06
+          }).addTo(poisLayer);
+
+          // 3. 200m Rule Boundary
           L.circle(poi.coordinates, {
             radius: 200,
             color: '#f59e0b',
             weight: 1,
             dashArray: '2, 6',
             fillColor: '#f59e0b',
-            fillOpacity: 0.04
+            fillOpacity: 0.03
           }).addTo(poisLayer);
         }
 
-        const badgeColor = poi.team === 'ger' ? '#ef4444' : poi.team === 'us' ? '#3b82f6' : '#eab308';
-        const iconHtml = `
-          <div style="background: ${isSelected ? '#b45309' : '#11171b'}; 
-                      border: 2px solid ${isSelected ? '#fbbf24' : badgeColor}; 
-                      padding: 2px 7px; border-radius: 4px; font-family: 'Chakra Petch', sans-serif; 
-                      font-size: 11px; font-weight: bold; color: #fff; white-space: nowrap; 
-                      box-shadow: 0 0 12px rgba(0,0,0,0.9); cursor: pointer; text-align: center;">
-            ${isSelected ? '⭐ [OBJETIVO ACTIVO] ' : '🚩 '}${poi.name}
-          </div>
-        `;
+        // Authentic Hell Let Loose Strongpoint Marker
+        const iconHtml = getHLLBaseMarkerHTML(poi, isSelected);
         const icon = L.divIcon({
-          className: 'strongpoint-label',
+          className: 'strongpoint-badge',
           html: iconHtml,
-          iconAnchor: [45, 12]
+          iconSize: [40, 52],
+          iconAnchor: [20, 26]
         });
 
         const marker = L.marker(poi.coordinates, { icon }).addTo(poisLayer);
@@ -503,10 +518,23 @@ export default function MapViewer({
     circlesLayer.clearLayers();
 
     const friendlyGarrisons = markers.filter(m => m.type === 'friendly_garrison');
+    const squadMembers = markers.filter(m => m.type && m.type.startsWith('squad_'));
+
+    // Draw tactical formation links between squad members
+    if (squadMembers.length >= 2) {
+      const squadPoints = squadMembers.map(sm => sm.coordinates);
+      L.polyline(squadPoints, {
+        color: '#10b981',
+        weight: 2,
+        dashArray: '4, 6',
+        opacity: 0.75
+      }).addTo(circlesLayer);
+    }
 
     markers.forEach(m => {
       const isFriendlyGar = m.type === 'friendly_garrison';
       const isFriendlyOp = m.type === 'friendly_op';
+      const isSquadRole = m.type && m.type.startsWith('squad_');
 
       let hasProximityViolation = false;
       if (isFriendlyGar) {
@@ -541,6 +569,16 @@ export default function MapViewer({
           fillOpacity: 0.12,
           interactive: false
         }).addTo(circlesLayer);
+      } else if (isSquadRole) {
+        L.circle(m.coordinates, {
+          radius: 8,
+          color: '#10b981',
+          weight: 1,
+          dashArray: '2, 2',
+          fillColor: '#10b981',
+          fillOpacity: 0.15,
+          interactive: false
+        }).addTo(circlesLayer);
       }
 
       const iconHtml = getHLLMarkerHTML(m.type, m.name, hasProximityViolation);
@@ -553,11 +591,13 @@ export default function MapViewer({
       const leafletMarker = L.marker(m.coordinates, { icon }).addTo(markersLayer);
 
       leafletMarker.bindPopup(`
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #111;">
-          <strong>${m.name}</strong><br/>
-          <span>${m.type.replace('_', ' ').toUpperCase()}</span><br/>
-          ${hasProximityViolation ? '<span style="color: red; font-weight: bold;">¡VIOLA REGLA DE 200M!</span><br/>' : ''}
-          <button id="del-${m.id}" style="margin-top: 6px; background: #dc2626; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #111; min-width: 170px;">
+          <strong style="color: #064e3b; font-size: 12px;">${m.name}</strong><br/>
+          ${m.weapon ? `<span style="color: #374151; font-size: 10px;">Arma: ${m.weapon}</span><br/>` : ''}
+          ${m.roleNote ? `<div style="margin: 4px 0; padding: 4px; background: #ecfdf5; border-left: 2px solid #10b981; font-size: 10px; color: #047857;">${m.roleNote}</div>` : ''}
+          <span style="color: #6b7280; font-size: 10px;">${m.type.replace('_', ' ').toUpperCase()}</span><br/>
+          ${hasProximityViolation ? '<span style="color: red; font-weight: bold; font-size: 10px;">¡VIOLA REGLA DE 200M!</span><br/>' : ''}
+          <button id="del-${m.id}" style="margin-top: 6px; background: #dc2626; color: #fff; border: none; padding: 3px 6px; border-radius: 3px; cursor: pointer; font-size: 10px;">
             Eliminar Marcador
           </button>
         </div>
