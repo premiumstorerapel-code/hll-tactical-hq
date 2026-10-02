@@ -1,0 +1,551 @@
+{
+  "id": "foy",
+  "code": "FOY",
+  "name": "Foy",
+  "image": "/maps/foy.webp",
+  "widthMeters": 1984,
+  "heightMeters": 1984,
+  "gridSizeMeters": 200,
+  "gridCols": 10,
+  "gridRows": 10,
+  "teams": {
+    "t1": "UNITED STATES",
+    "t2": "GERMANY"
+  },
+  "history": {
+    "battle": "Battle of Foy (December 20, 1944 – January 14, 1945)",
+    "description": "During the Battle of the Bulge, the village of Foy was occupied by German forces while the U.S. 101st Airborne Division held defensive positions in the Bois Jacques (Jack's Wood) just outside town. The 506th Parachute Infantry Regiment set up in the area on December 19, 1944, and faced intense fighting from elements of the German 2nd Panzer Division and 26th Volksgrenadier Division. After being relieved by General George S. Patton's U.S. Third Army, the 101st launched an assault to retake the town.",
+    "tactics": "On January 13, 1945, in difficult winter conditions, Companies E and I of the 506th PIR led the assault on Foy under covering fire. The attack required house-to-house fighting to clear snipers from the village buildings. Despite the open terrain exposing attackers to German machine guns and artillery, the coordinated infantry assault succeeded in capturing Foy with dozens of German soldiers taken prisoner. The next day, German forces counterattacked but failed to retake the village.",
+    "significance": "Foy was a key objective for breaking out from the Bastogne perimeter and advancing northward. Its capture allowed the 101st Airborne, with support from the U.S. 11th Armored Division, to gradually liberate territories north of Bastogne including Noville and Cobru. The battle demonstrated the resilience of airborne troops who, despite weeks of siege and brutal winter conditions, could still execute effective offensive operations. Foy changed hands four times during the battle, ultimately remaining in American control.",
+    "images": [
+      {
+        "thumbnail": "images/history/foy/foy_1944_thumbnail.webp",
+        "full": "images/history/foy/foy_1944.webp",
+        "caption": "101st Airborne troops move out of Bastogne, December 31, 1944, after the siege was relieved by Patton's Third Army."
+      }
+    ],
+    "strategicContext": {
+      "images": [
+        {
+          "src": "images/history/foy/foy_1944_101st_airborne.webp",
+          "caption": "101st Airborne Division receives airdropped supplies during the siege of Bastogne, December 1944."
+        }
+      ]
+    }
+  },
+  "strongpointsCount": 15,
+  "artilleryCount": 6,
+  "poiCount": 5,
+  "points": [
+    {
+      "id": "foy_us_a1",
+      "name": "US Artillery US_A1",
+      "type": "artillery",
+      "coordinates": [
+        36.5,
+        1133
+      ],
+      "rawGameCoords": {
+        "gameX": 14095,
+        "gameY": -95545
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "foy_us_a2",
+      "name": "US Artillery US_A2",
+      "type": "artillery",
+      "coordinates": [
+        31.6,
+        1142.3
+      ],
+      "rawGameCoords": {
+        "gameX": 15033,
+        "gameY": -96042
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "foy_us_a3",
+      "name": "US Artillery US_A3",
+      "type": "artillery",
+      "coordinates": [
+        29,
+        1150.5
+      ],
+      "rawGameCoords": {
+        "gameX": 15846,
+        "gameY": -96295
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "foy_ger_a1",
+      "name": "GER Artillery GER_A1",
+      "type": "artillery",
+      "coordinates": [
+        1931.6,
+        1053.8
+      ],
+      "rawGameCoords": {
+        "gameX": 6178.13,
+        "gameY": 93955.51
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "foy_ger_a2",
+      "name": "GER Artillery GER_A2",
+      "type": "artillery",
+      "coordinates": [
+        1930.7,
+        1066
+      ],
+      "rawGameCoords": {
+        "gameX": 7401.13,
+        "gameY": 93871.51
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "foy_ger_a3",
+      "name": "GER Artillery GER_A3",
+      "type": "artillery",
+      "coordinates": [
+        1930.7,
+        1079.8
+      ],
+      "rawGameCoords": {
+        "gameX": 8783.13,
+        "gameY": 93871.7
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "foy_b4",
+      "name": "N30 HIGHWAY",
+      "type": "strongpoint",
+      "coordinates": [
+        674.3,
+        607.9
+      ],
+      "rawGameCoords": {
+        "gameX": -38407,
+        "gameY": -31775
+      },
+      "team": "us",
+      "radiusMeters": 63,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b2",
+      "name": "BIZORY-FOY ROAD",
+      "type": "strongpoint",
+      "coordinates": [
+        598.1,
+        1092.4
+      ],
+      "rawGameCoords": {
+        "gameX": 10035,
+        "gameY": -39390
+      },
+      "team": "us",
+      "radiusMeters": 35,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b1",
+      "name": "EASTERN OURTHE",
+      "type": "strongpoint",
+      "coordinates": [
+        713.8,
+        1450.5
+      ],
+      "rawGameCoords": {
+        "gameX": 45845,
+        "gameY": -27822
+      },
+      "team": "us",
+      "radiusMeters": 45,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b7",
+      "name": "ROAD TO BASTOGNE",
+      "type": "strongpoint",
+      "coordinates": [
+        354.3,
+        463.4
+      ],
+      "rawGameCoords": {
+        "gameX": -52862,
+        "gameY": -63773
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b5",
+      "name": "BOIS JACQUES",
+      "type": "strongpoint",
+      "coordinates": [
+        309.6,
+        936.2
+      ],
+      "rawGameCoords": {
+        "gameX": -5582,
+        "gameY": -68237
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b6",
+      "name": "FOREST OUTSKIRTS",
+      "type": "strongpoint",
+      "coordinates": [
+        320.6,
+        1454.8
+      ],
+      "rawGameCoords": {
+        "gameX": 46279,
+        "gameY": -67141
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b9",
+      "name": "WEST BEND",
+      "type": "strongpoint",
+      "coordinates": [
+        1121.7,
+        460.5
+      ],
+      "rawGameCoords": {
+        "gameX": -53153,
+        "gameY": 12966
+      },
+      "team": "neu",
+      "radiusMeters": 55,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b3",
+      "name": "SOUTHERN EDGE",
+      "type": "strongpoint",
+      "coordinates": [
+        986.1,
+        980.9
+      ],
+      "rawGameCoords": {
+        "gameX": -1114,
+        "gameY": -589
+      },
+      "team": "neu",
+      "radiusMeters": 47,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b14",
+      "name": "DUGOUT BARN",
+      "type": "strongpoint",
+      "coordinates": [
+        1039.2,
+        1452.9
+      ],
+      "rawGameCoords": {
+        "gameX": 46085.04,
+        "gameY": 4721.09
+      },
+      "team": "neu",
+      "radiusMeters": 41,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b11",
+      "name": "ROAD TO RECOGNE",
+      "type": "strongpoint",
+      "coordinates": [
+        1735.4,
+        494.5
+      ],
+      "rawGameCoords": {
+        "gameX": -49755,
+        "gameY": 74340
+      },
+      "team": "ger",
+      "radiusMeters": 28,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b13",
+      "name": "COBRU APPROACH",
+      "type": "strongpoint",
+      "coordinates": [
+        1739.9,
+        1091.5
+      ],
+      "rawGameCoords": {
+        "gameX": 9952,
+        "gameY": 74787
+      },
+      "team": "ger",
+      "radiusMeters": 35,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b12",
+      "name": "ROAD TO NOVILLE",
+      "type": "strongpoint",
+      "coordinates": [
+        1761.5,
+        1374.9
+      ],
+      "rawGameCoords": {
+        "gameX": 38286.18,
+        "gameY": 76947.95
+      },
+      "team": "ger",
+      "radiusMeters": 53,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b10",
+      "name": "COBRU FACTORY",
+      "type": "strongpoint",
+      "coordinates": [
+        1438.8,
+        692.1
+      ],
+      "rawGameCoords": {
+        "gameX": -29988,
+        "gameY": 44676
+      },
+      "team": "ger",
+      "radiusMeters": 55,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b15",
+      "name": "FOY",
+      "type": "strongpoint",
+      "coordinates": [
+        1332.5,
+        896.1
+      ],
+      "rawGameCoords": {
+        "gameX": -9586,
+        "gameY": 34052
+      },
+      "team": "ger",
+      "radiusMeters": 33,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_b8",
+      "name": "FLAK BATTERY",
+      "type": "strongpoint",
+      "coordinates": [
+        1387.9,
+        1444.4
+      ],
+      "rawGameCoords": {
+        "gameX": 45241,
+        "gameY": 39594
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "foy_poi_bois_jacques",
+      "name": "Bois Jacques Foxhole Network (Easy Co. Trenches)",
+      "type": "building",
+      "coordinates": [
+        310,
+        936
+      ],
+      "advantage": "Deep snow-covered foxholes and pine tree trunks providing excellent splinter cover and extreme concealment against enemy armor optics.",
+      "doctrineTactic": "Set up forward Squad Leader Outpost behind earthen revetments. Base of Fire element pins down enemy advancing across snowy field.",
+      "idealSquadRole": "Officer & Machine Gunner",
+      "lineOfSight": "200m open clearing sightline towards Foy village southern edge.",
+      "counterMeasures": "Airburst artillery rounds shearing tree branches; high-explosive tank bombardment.",
+      "rawGameCoords": {
+        "gameX": -5600,
+        "gameY": -68200
+      }
+    },
+    {
+      "id": "foy_poi_cobru_factory",
+      "name": "Cobru Industrial Brick Factory",
+      "type": "building",
+      "coordinates": [
+        1438,
+        692
+      ],
+      "advantage": "Multi-room reinforced red brick facility with high rafters and window slits. Unshakeable defensive strongpoint against northern armor incursions.",
+      "doctrineTactic": "Engineer build stage 3 bunkers and barbed wire funnels across all rear exterior doorways. Place garrison inside central warehouse.",
+      "idealSquadRole": "Engineer / Support / Machine Gunner",
+      "lineOfSight": "Domination of northern road approaches toward Recogne.",
+      "counterMeasures": "Heavy tank AP penetration on soft brick sections, combined with satchel assault teams.",
+      "rawGameCoords": {
+        "gameX": -30000,
+        "gameY": 44600
+      }
+    },
+    {
+      "id": "foy_poi_n30_junction",
+      "name": "N30 Highway & Rail Chokepoint",
+      "type": "chokepoint",
+      "coordinates": [
+        674,
+        607
+      ],
+      "advantage": "Direct highway connecting Bastogne to Noville bordered by steep snow banks and ditches.",
+      "doctrineTactic": "Place daisy chain AT mines across road tracks. Keep Anti-Tank gun concealed in woodline 120m away.",
+      "idealSquadRole": "Anti-Tank",
+      "lineOfSight": "Dead straight 400m highway visibility.",
+      "counterMeasures": "Advance tanks through snowy ditch off-road with infantry escorting flanks.",
+      "rawGameCoords": {
+        "gameX": -38500,
+        "gameY": -31800
+      }
+    },
+    {
+      "id": "foy_poi_dugout_barn",
+      "name": "Dugout Barn Hull-Down Vantage",
+      "type": "hill",
+      "coordinates": [
+        1039,
+        1452
+      ],
+      "advantage": "Elevated snow berm with sunken wooden barn creating an optimal hull-down vantage point for heavy tanks (Tiger I / 76mm Jumbo).",
+      "doctrineTactic": "Hull-down tank holds the eastern flank, denying enemy armor movement along the Bizory-Foy road axis.",
+      "idealSquadRole": "Tank Commander & Gunner",
+      "lineOfSight": "500m over central eastern fields and woods.",
+      "counterMeasures": "Smoke rounds on turret face; infantry flanking through woods with bazookas.",
+      "rawGameCoords": {
+        "gameX": 46000,
+        "gameY": 4700
+      }
+    },
+    {
+      "id": "foy_poi_west_bend_drainage",
+      "name": "West Bend Frozen Creek Corridor",
+      "type": "route",
+      "coordinates": [
+        1121,
+        460
+      ],
+      "advantage": "Depressed terrain depression with snow drifts concealing infantry silhouettes against the horizon.",
+      "doctrineTactic": "Stealth flanking vector to bypass Foy village center and plant enemy garrison hunting outposts behind Axis lines.",
+      "idealSquadRole": "Recon / Assault",
+      "lineOfSight": "Low profile, concealed from long-range snipers in church belfries.",
+      "counterMeasures": "Periodic machine gun recon-by-fire into creek hollows.",
+      "rawGameCoords": {
+        "gameX": -53200,
+        "gameY": 12900
+      }
+    }
+  ]
+}

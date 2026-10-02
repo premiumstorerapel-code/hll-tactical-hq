@@ -1,0 +1,566 @@
+{
+  "id": "sme",
+  "code": "SME",
+  "name": "Sainte-Mère-Église",
+  "image": "/maps/sme.webp",
+  "widthMeters": 1984,
+  "heightMeters": 1984,
+  "gridSizeMeters": 200,
+  "gridCols": 10,
+  "gridRows": 10,
+  "teams": {
+    "t1": "UNITED STATES",
+    "t2": "GERMANY"
+  },
+  "history": {
+    "battle": "Battle of Sainte-Mère-Église (June 6-7, 1944)",
+    "description": "Sainte-Mère-Église played a significant role in the Normandy landings due to its position on Route N13, which the Germans would have used to counterattack Allied landings on Utah and Omaha Beaches. In the early morning of June 6, 1944, mixed units of the U.S. 82nd Airborne and 101st Airborne Divisions occupied the town during Mission Boston, making it one of the first towns liberated in the invasion. The town was held by lightly armed airborne troops until reinforced by tanks from Utah Beach on the afternoon of June 7.",
+    "tactics": "Early airborne landings at approximately 1:40 a.m. resulted in heavy casualties as buildings in town caught fire, illuminating the sky and making descending paratroopers easy targets. Many paratroopers were shot while hanging from trees and utility poles. At 5 a.m., Lt. Col. Edward C. Krause of the 505th PIR captured the town with little resistance as the German garrison was confused and had retired for the night. Heavy German counterattacks began later on June 6 and continued into June 7, but the airborne troops held the town until reinforced by tanks from Utah Beach.",
+    "significance": "Sainte-Mère-Église was one of the first towns liberated on D-Day, securing a crucial crossroads on Route N13 that would have been used for German counterattacks against the Utah and Omaha beachheads. The capture demonstrated the importance of airborne operations in seizing key objectives ahead of ground forces. The famous incident of paratrooper John Steele, whose parachute caught on the church spire, became one of the most iconic images of D-Day and was portrayed in the film The Longest Day. Lt. Col. Krause and Lt. Col. Vandervoort received the Distinguished Service Cross for their actions.",
+    "images": [
+      {
+        "thumbnail": "images/history/st_mere_eglise/stme_1944_thumbnail.webp",
+        "full": "images/history/st_mere_eglise/stme_1944.webp",
+        "caption": "Sainte-Mère-Église, France, possibly from before the battle (pre-June 6, 1944)."
+      }
+    ],
+    "tacticalSituation": {
+      "images": [
+        {
+          "thumbnail": "images/history/st_mere_eglise/stme_1944_soldiers_thumbnail.webp",
+          "full": "images/history/st_mere_eglise/stme_1944_soldiers.webp",
+          "caption": "Four members of the 82nd Airborne Division enter the village of St. Mere-Eglise, France, under heavy German artillery fire. The city was later taken by the Allies."
+        },
+        {
+          "thumbnail": "images/history/st_mere_eglise/stme_1944_paratroopers_thumbnail.webp",
+          "full": "images/history/st_mere_eglise/stme_1944_paratroopers.webp",
+          "caption": "Finding horses plentiful in St. Mere Eglise, France, American paratroopers utilize them as transportation for patrolling the street, after clearing the town of German defenders. 6th June 1944."
+        }
+      ]
+    },
+    "strategicContext": {
+      "images": [
+        {
+          "thumbnail": "images/history/st_mere_eglise/stme_1944_wounded_german_soldier_thumbnail.webp",
+          "full": "images/history/st_mere_eglise/stme_1944_wounded_german_soldier.webp",
+          "caption": "U.S. medics giving blood plasma to a wounded German soldier. St. Mere Eglise, Normandy, 15 June, 1944."
+        }
+      ]
+    }
+  },
+  "strongpointsCount": 15,
+  "artilleryCount": 6,
+  "poiCount": 5,
+  "points": [
+    {
+      "id": "sme_us_a1",
+      "name": "US Artillery US_A1",
+      "type": "artillery",
+      "coordinates": [
+        986.4,
+        1911.5
+      ],
+      "rawGameCoords": {
+        "gameX": 91952,
+        "gameY": -559
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "sme_us_a2",
+      "name": "US Artillery US_A2",
+      "type": "artillery",
+      "coordinates": [
+        1002.6,
+        1911.5
+      ],
+      "rawGameCoords": {
+        "gameX": 91952,
+        "gameY": 1057
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "sme_us_a3",
+      "name": "US Artillery US_A3",
+      "type": "artillery",
+      "coordinates": [
+        1016.3,
+        1911.5
+      ],
+      "rawGameCoords": {
+        "gameX": 91952,
+        "gameY": 2432
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "sme_ger_a1",
+      "name": "GER Artillery GER_A1",
+      "type": "artillery",
+      "coordinates": [
+        973.4,
+        41.6
+      ],
+      "rawGameCoords": {
+        "gameX": -95041.6,
+        "gameY": -1857.68
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "sme_ger_a2",
+      "name": "GER Artillery GER_A2",
+      "type": "artillery",
+      "coordinates": [
+        981.7,
+        40.9
+      ],
+      "rawGameCoords": {
+        "gameX": -95111.11,
+        "gameY": -1027.0771
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "sme_ger_a3",
+      "name": "GER Artillery GER_A3",
+      "type": "artillery",
+      "coordinates": [
+        989.6,
+        40.2
+      ],
+      "rawGameCoords": {
+        "gameX": -95177.37,
+        "gameY": -235.55342
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "sme_b3",
+      "name": "LES VIEUX VERGERS",
+      "type": "strongpoint",
+      "coordinates": [
+        1280.6,
+        1693.7
+      ],
+      "rawGameCoords": {
+        "gameX": 70168,
+        "gameY": 28861
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b2",
+      "name": "CROSS ROADS",
+      "type": "strongpoint",
+      "coordinates": [
+        978.1,
+        1714.8
+      ],
+      "rawGameCoords": {
+        "gameX": 72279,
+        "gameY": -1393
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b1",
+      "name": "RUISSEAU DE FERME",
+      "type": "strongpoint",
+      "coordinates": [
+        602.9,
+        1713.4
+      ],
+      "rawGameCoords": {
+        "gameX": 72138,
+        "gameY": -38912
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b4",
+      "name": "ARTILLERY BATTERY",
+      "type": "strongpoint",
+      "coordinates": [
+        1335.7,
+        1388.5
+      ],
+      "rawGameCoords": {
+        "gameX": 39652,
+        "gameY": 34374
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b5",
+      "name": "THE CEMETERY",
+      "type": "strongpoint",
+      "coordinates": [
+        936.1,
+        1280.6
+      ],
+      "rawGameCoords": {
+        "gameX": 28858,
+        "gameY": -5593
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b6",
+      "name": "MAISON DU CRIQUE",
+      "type": "strongpoint",
+      "coordinates": [
+        686.7,
+        1250.8
+      ],
+      "rawGameCoords": {
+        "gameX": 25884,
+        "gameY": -30530
+      },
+      "team": "us",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b15",
+      "name": "HOSPICE",
+      "type": "strongpoint",
+      "coordinates": [
+        1452,
+        981
+      ],
+      "rawGameCoords": {
+        "gameX": -1100,
+        "gameY": 46000
+      },
+      "team": "neu",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b7",
+      "name": "SAINTE-MÈRE-ÉGLISE",
+      "type": "strongpoint",
+      "coordinates": [
+        1066.4,
+        1051.5
+      ],
+      "rawGameCoords": {
+        "gameX": 5949,
+        "gameY": 7436
+      },
+      "team": "neu",
+      "radiusMeters": 47,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b10",
+      "name": "CHECKPOINT",
+      "type": "strongpoint",
+      "coordinates": [
+        667.1,
+        996.7
+      ],
+      "rawGameCoords": {
+        "gameX": 467,
+        "gameY": -32490
+      },
+      "team": "neu",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b11",
+      "name": "ROUTE DU HARAS",
+      "type": "strongpoint",
+      "coordinates": [
+        1369.8,
+        583.1
+      ],
+      "rawGameCoords": {
+        "gameX": -40886,
+        "gameY": 37779
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b8",
+      "name": "WESTERN APPROACH",
+      "type": "strongpoint",
+      "coordinates": [
+        1139.6,
+        665.5
+      ],
+      "rawGameCoords": {
+        "gameX": -32652,
+        "gameY": 14761
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b9",
+      "name": "RUE DE GAMBOSVILLE",
+      "type": "strongpoint",
+      "coordinates": [
+        574.7,
+        646.5
+      ],
+      "rawGameCoords": {
+        "gameX": -34553,
+        "gameY": -41733
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b12",
+      "name": "FLAK POSITION",
+      "type": "strongpoint",
+      "coordinates": [
+        1399.7,
+        298.9
+      ],
+      "rawGameCoords": {
+        "gameX": -69311,
+        "gameY": 40772
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b13",
+      "name": "VAULAVILLE",
+      "type": "strongpoint",
+      "coordinates": [
+        1023.5,
+        369.8
+      ],
+      "rawGameCoords": {
+        "gameX": -62223,
+        "gameY": 3146
+      },
+      "team": "ger",
+      "radiusMeters": 25,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_b14",
+      "name": "LA PRAIRIE",
+      "type": "strongpoint",
+      "coordinates": [
+        641.6,
+        316.8
+      ],
+      "rawGameCoords": {
+        "gameX": -67517,
+        "gameY": -35037
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "sme_poi_church_square",
+      "name": "Sainte-Mère-Église Town Church & Belltower",
+      "type": "building",
+      "coordinates": [
+        1066,
+        1059
+      ],
+      "advantage": "Iconic church square where American paratroopers landed. Solid stone masonry with commanding second-tier windows and high roof visibility.",
+      "doctrineTactic": "Establish squad defensive anchor. Barricade interior chokepoints and position MG covering the southern plaza fountain approach.",
+      "idealSquadRole": "Squad Leader & Machine Gunner",
+      "lineOfSight": "Full 360-degree control of center plaza and cross streets.",
+      "counterMeasures": "Direct tank shell wall puncture and continuous artillery suppression.",
+      "rawGameCoords": {
+        "gameX": 6700,
+        "gameY": 7400
+      }
+    },
+    {
+      "id": "sme_poi_cemetery_wall",
+      "name": "Historic Stone Cemetery Wall",
+      "type": "building",
+      "coordinates": [
+        936,
+        1288
+      ],
+      "advantage": "Waist-high stone walling and stone tombs provide heavy ballistic cover for prone infantry defending against eastern sector thrusts.",
+      "doctrineTactic": "Support role sets ammo boxes behind mausoleums; infantry holds fire until enemy enters open field at 75m.",
+      "idealSquadRole": "Rifleman / Support",
+      "lineOfSight": "150m open field coverage toward Les Vieux Vergers.",
+      "counterMeasures": "HE artillery fragmentation and flanking through the northern orchard hedgerow.",
+      "rawGameCoords": {
+        "gameX": 29600,
+        "gameY": -5600
+      }
+    },
+    {
+      "id": "sme_poi_crossroads_junction",
+      "name": "Highway D115 Critical Crossroads",
+      "type": "chokepoint",
+      "coordinates": [
+        978,
+        1722
+      ],
+      "advantage": "Main east-west supply artery for Axis/Allied armor reinforcement columns entering the center sectors.",
+      "doctrineTactic": "Conceal Anti-Tank mines in dark pavement shadows. Place AT gun 150m behind tree line with direct side-armor angle.",
+      "idealSquadRole": "Anti-Tank / Engineer",
+      "lineOfSight": "Linear north-south and east-west clear line of fire.",
+      "counterMeasures": "Recon vehicle screening before main armor column advances.",
+      "rawGameCoords": {
+        "gameX": 73000,
+        "gameY": -1400
+      }
+    },
+    {
+      "id": "sme_poi_western_sunken_lane",
+      "name": "Western Bocage Sunken Lane (Covered Route)",
+      "type": "route",
+      "coordinates": [
+        1139,
+        673
+      ],
+      "advantage": "Sunken cart track enclosed by dense 3-meter earthen hedgerow banks on both sides. Conceals full infantry platoons from sniper observation.",
+      "doctrineTactic": "Execute 90-degree flanking assault toward Western Approach strongpoint. Move in wedge formation with point rifleman checking corners.",
+      "idealSquadRole": "Assault / Officer",
+      "lineOfSight": "Restricted linear trench view.",
+      "counterMeasures": "Tripwire AP mines and fragmentation grenade lobbing over hedgerow walls.",
+      "rawGameCoords": {
+        "gameX": -31900,
+        "gameY": 14700
+      }
+    },
+    {
+      "id": "sme_poi_flak_embankment",
+      "name": "Flak Position Gun Embankment",
+      "type": "hill",
+      "coordinates": [
+        1399,
+        306
+      ],
+      "advantage": "Earth-bermed gun revetments shielding artillery and heavy anti-aircraft pieces from flat-trajectory ground fire.",
+      "doctrineTactic": "Hull-down tank positioning to hull-lock incoming enemy medium armor advancing from Vaulaville.",
+      "idealSquadRole": "Tank Crew / Anti-Tank Gun",
+      "lineOfSight": "Wide 400m firing arc over northern agrarian fields.",
+      "counterMeasures": "Rear infantry satchel charge rush through orchard blindspot.",
+      "rawGameCoords": {
+        "gameX": -68600,
+        "gameY": 40700
+      }
+    }
+  ]
+}

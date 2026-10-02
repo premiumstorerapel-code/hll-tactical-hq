@@ -1,0 +1,579 @@
+{
+  "id": "car",
+  "code": "CAR",
+  "name": "Carentan",
+  "image": "/maps/carentan.webp",
+  "widthMeters": 2016,
+  "heightMeters": 2016,
+  "gridSizeMeters": 200,
+  "gridCols": 10,
+  "gridRows": 10,
+  "teams": {
+    "t1": "UNITED STATES",
+    "t2": "GERMANY"
+  },
+  "history": {
+    "battle": "Battle of Carentan (June 10-14, 1944)",
+    "description": "After landing on D-Day, the 101st Airborne Division was ordered to capture Carentan to link the Utah and Omaha beachheads. German 6th Fallschirmjäger Regiment under Colonel von der Heydte defended the town. The battle involved crossing causeways through flooded fields, with the 502nd PIR attacking from the southwest and the 327th GIR crossing the Douve River at Brévands for a double envelopment.",
+    "tactics": "The flooded terrain forced attackers along narrow causeways, making them vulnerable to German machine guns and mortars. US forces used artillery support and coordinated infantry assaults to capture the bridges and high ground. The fighting included the famous charge by Cole's 3rd Battalion across an open field under heavy fire, now known as 'Purple Heart Lane.'",
+    "significance": "Carentan was vital for connecting the two American beachheads into a continuous front. Its capture allowed Allied supplies to flow directly into Normandy and prevented German forces from splitting the invasion. The battle demonstrated the importance of airborne troops in seizing key objectives ahead of ground forces.",
+    "images": [
+      {
+        "thumbnail": "images/history/carentan/carentan_1944_airborne_troops_kubelwagen_thumbnail.webp",
+        "full": "images/history/carentan/carentan_1944_airborne_troops_kubelwagen.webp",
+        "caption": "U.S. Airborne paratroopers in and on a captured VW Kübelwagen and by houses in Carentan, Battle of Normandy, 1944."
+      }
+    ],
+    "tacticalSituation": {
+      "images": [
+        {
+          "thumbnail": "images/history/carentan/carentan_1944_thumbnail.webp",
+          "full": "images/history/carentan/carentan_1944.webp",
+          "caption": "Troops in a jeep tow light artillery through a street in Carentan, France, the first French town taken by the Allied armies. 12 June, 1944. 101st Airborne Division."
+        }
+      ]
+    },
+    "strategicContext": {
+      "images": [
+        {
+          "thumbnail": "images/history/carentan/carentan_1944_chaplain_prayer_thumbnail.webp",
+          "full": "images/history/carentan/carentan_1944_chaplain_prayer.webp",
+          "caption": "The monument, draped with parachutes, is a World War 1 tribute from the citizens of Carentan to its soldier dead. 19 June, 1944. 101st Airborne Division."
+        }
+      ]
+    }
+  },
+  "strongpointsCount": 15,
+  "artilleryCount": 6,
+  "poiCount": 6,
+  "points": [
+    {
+      "id": "car_us_a1",
+      "name": "US Artillery US_A1",
+      "type": "artillery",
+      "coordinates": [
+        1051.7,
+        35.5
+      ],
+      "rawGameCoords": {
+        "gameX": -97254,
+        "gameY": 4366
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "car_us_a2",
+      "name": "US Artillery US_A2",
+      "type": "artillery",
+      "coordinates": [
+        1060.6,
+        35.5
+      ],
+      "rawGameCoords": {
+        "gameX": -97253,
+        "gameY": 5262
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "car_us_a3",
+      "name": "US Artillery US_A3",
+      "type": "artillery",
+      "coordinates": [
+        1069,
+        35.5
+      ],
+      "rawGameCoords": {
+        "gameX": -97252,
+        "gameY": 6096
+      },
+      "team": "us",
+      "radiusMeters": 5,
+      "advantage": "Fixed US artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "car_germany_a1",
+      "name": "GER Artillery GERMANY_A1",
+      "type": "artillery",
+      "coordinates": [
+        1002.9,
+        1976.9
+      ],
+      "rawGameCoords": {
+        "gameX": 96890,
+        "gameY": -513.99
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "car_germany_a2",
+      "name": "GER Artillery GERMANY_A2",
+      "type": "artillery",
+      "coordinates": [
+        1011.5,
+        1976.9
+      ],
+      "rawGameCoords": {
+        "gameX": 96890,
+        "gameY": 345
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "car_germany_a3",
+      "name": "GER Artillery GERMANY_A3",
+      "type": "artillery",
+      "coordinates": [
+        1020.3,
+        1976.9
+      ],
+      "rawGameCoords": {
+        "gameX": 96890,
+        "gameY": 1234
+      },
+      "team": "ger",
+      "radiusMeters": 5,
+      "advantage": "Fixed GER artillery battery position with maximum effective range up to 1600m.",
+      "doctrineTactic": "Protect with defensive squad outpost and AP mines against enemy Recon sniper infiltration.",
+      "idealSquadRole": "Artillery Crew / Base Defense",
+      "lineOfSight": "Indirect high-arc ballistic trajectory",
+      "counterMeasures": "Allied Recon squad search and destroy; smoke out gun pit."
+    },
+    {
+      "id": "car_b3",
+      "name": "FARM RUINS",
+      "type": "strongpoint",
+      "coordinates": [
+        630.8,
+        319.9
+      ],
+      "rawGameCoords": {
+        "gameX": -68814.41,
+        "gameY": -37720.035
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b1",
+      "name": "502ND START",
+      "type": "strongpoint",
+      "coordinates": [
+        961.3,
+        337.2
+      ],
+      "rawGameCoords": {
+        "gameX": -67076.41,
+        "gameY": -4670.035
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b2",
+      "name": "BLACTOT",
+      "type": "strongpoint",
+      "coordinates": [
+        1405.3,
+        352.6
+      ],
+      "rawGameCoords": {
+        "gameX": -65543.41,
+        "gameY": 39731.965
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b6",
+      "name": "DERAILED TRAIN",
+      "type": "strongpoint",
+      "coordinates": [
+        718.2,
+        614.2
+      ],
+      "rawGameCoords": {
+        "gameX": -39381.41,
+        "gameY": -28975.035
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b4",
+      "name": "RUINS",
+      "type": "strongpoint",
+      "coordinates": [
+        984.6,
+        746.2
+      ],
+      "rawGameCoords": {
+        "gameX": -26183.41,
+        "gameY": -2343.035
+      },
+      "team": "us",
+      "radiusMeters": 30,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b5",
+      "name": "PUMPING STATION",
+      "type": "strongpoint",
+      "coordinates": [
+        1306.2,
+        640.5
+      ],
+      "rawGameCoords": {
+        "gameX": -36748.41,
+        "gameY": 29821.965
+      },
+      "team": "us",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for US team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b9",
+      "name": "TRAIN STATION",
+      "type": "strongpoint",
+      "coordinates": [
+        731,
+        1010.5
+      ],
+      "rawGameCoords": {
+        "gameX": 246.59,
+        "gameY": -27698.035
+      },
+      "team": "neu",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b7",
+      "name": "TOWN CENTER",
+      "type": "strongpoint",
+      "coordinates": [
+        1018.2,
+        1018.2
+      ],
+      "rawGameCoords": {
+        "gameX": 1021.59,
+        "gameY": 1021.96
+      },
+      "team": "neu",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b8",
+      "name": "CANAL CROSSING",
+      "type": "strongpoint",
+      "coordinates": [
+        1401.9,
+        1066.9
+      ],
+      "rawGameCoords": {
+        "gameX": 5892.59,
+        "gameY": 39387.965
+      },
+      "team": "neu",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for NEU team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b12",
+      "name": "MONT HALAIS",
+      "type": "strongpoint",
+      "coordinates": [
+        494.6,
+        1346.3
+      ],
+      "rawGameCoords": {
+        "gameX": 33828.59,
+        "gameY": -51343.035
+      },
+      "team": "ger",
+      "radiusMeters": 40,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b10",
+      "name": "RAIL CROSSING",
+      "type": "strongpoint",
+      "coordinates": [
+        1071,
+        1449.7
+      ],
+      "rawGameCoords": {
+        "gameX": 44171.59,
+        "gameY": 6296.965
+      },
+      "team": "ger",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b11",
+      "name": "CUSTOMS",
+      "type": "strongpoint",
+      "coordinates": [
+        1350.2,
+        1416.2
+      ],
+      "rawGameCoords": {
+        "gameX": 40816.59,
+        "gameY": 34224.965
+      },
+      "team": "ger",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b15",
+      "name": "LA MAISON DES ORMES",
+      "type": "strongpoint",
+      "coordinates": [
+        623.2,
+        1730.2
+      ],
+      "rawGameCoords": {
+        "gameX": 72222.59,
+        "gameY": -38476.035
+      },
+      "team": "ger",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b13",
+      "name": "RAIL CAUSEWAY",
+      "type": "strongpoint",
+      "coordinates": [
+        948.3,
+        1764.1
+      ],
+      "rawGameCoords": {
+        "gameX": 75611.59,
+        "gameY": -5968.035
+      },
+      "team": "ger",
+      "radiusMeters": 55,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_b14",
+      "name": "CANAL LOCKS",
+      "type": "strongpoint",
+      "coordinates": [
+        1272.6,
+        1676.3
+      ],
+      "rawGameCoords": {
+        "gameX": 66826.59,
+        "gameY": 26456.965
+      },
+      "team": "ger",
+      "radiusMeters": 50,
+      "advantage": "Strategic Sector Capture Point for GER team. Dominates surrounding 200m combat zone.",
+      "doctrineTactic": "Anchor with minimum 2 defensive garrisons placed ~200m away in blue zone and 1 fallback garrison.",
+      "idealSquadRole": "Squad Leader / Support / Machine Gunner",
+      "lineOfSight": "Sector capture zone perimeter",
+      "counterMeasures": "Artillery barrage / bombing run before infantry breach."
+    },
+    {
+      "id": "car_poi_church",
+      "name": "Carentan Catholic Church (Eglise Notre-Dame)",
+      "type": "building",
+      "coordinates": [
+        1020,
+        1025
+      ],
+      "advantage": "Elevated Gothic bell tower provides 360-degree line of sight over Town Center, Canal Crossing, and southern railroad approaches. High hard stone cover impervious to small arms and light explosive fragmentation.",
+      "doctrineTactic": "Position designated Marksman / Sniper in belfry with Spotter monitoring Canal bridge. Place Squad Leader OP in church courtyard with AP mines on stairwell entrance.",
+      "idealSquadRole": "Recon / Machine Gunner",
+      "lineOfSight": "Full 360° over Town Center plaza and approach bridges up to 400m.",
+      "counterMeasures": "Concentrated medium armor HE shell fire on upper windows; smoke perimeter to blind tower snipers.",
+      "rawGameCoords": {
+        "gameX": 1700,
+        "gameY": 1200
+      }
+    },
+    {
+      "id": "car_poi_customs_office",
+      "name": "Customs Office 2-Story Depot",
+      "type": "building",
+      "coordinates": [
+        1350,
+        1416
+      ],
+      "advantage": "Dual-story industrial masonry structure controlling the entrance into the Customs sector. Second-floor windows create intersecting kill zones across the rail junction.",
+      "doctrineTactic": "Deploy bipod MG42/Browning .30 Cal on top-floor south-facing window. Plant AP mines on ground floor interior doorway.",
+      "idealSquadRole": "Machine Gunner & Engineer (Barbed Wire)",
+      "lineOfSight": "Direct 250m frontal coverage over rail bed and industrial warehouse approach.",
+      "counterMeasures": "Bazooka/Panzerschreck wall breaches; flanking maneuver through eastern hedgerows.",
+      "rawGameCoords": {
+        "gameX": 40800,
+        "gameY": 34200
+      }
+    },
+    {
+      "id": "car_poi_canal_bridge",
+      "name": "Canal Chokepoint & Lock Bridge",
+      "type": "chokepoint",
+      "coordinates": [
+        1402,
+        1066
+      ],
+      "advantage": "Narrow stone bridge over the deep water canal. Heavy armor and infantry crossing must funnel through a 6-meter wide aperture with zero natural flank cover.",
+      "doctrineTactic": "Engineer must lay Anti-Tank mine belt across bridge approach. Squad Leader calls precision artillery or 50mm smoke barrage if friendly forces need to push across.",
+      "idealSquadRole": "Anti-Tank / Combat Engineer",
+      "lineOfSight": "Linear funnel along canal bank corridor.",
+      "counterMeasures": "Airhead drop on opposing bank or smoke screen flanking via far eastern Canal Locks.",
+      "rawGameCoords": {
+        "gameX": 5800,
+        "gameY": 39400
+      }
+    },
+    {
+      "id": "car_poi_purple_heart_causeway",
+      "name": "Cole's Causeway (Purple Heart Lane Entry)",
+      "type": "chokepoint",
+      "coordinates": [
+        996,
+        480
+      ],
+      "advantage": "Flooded farm marshes on both sides of the roadway limit all mechanical and mechanized infantry movement to the elevated road embankment.",
+      "doctrineTactic": "Set up interlocking MG fire nests behind roadside hedgerow berms. Ambush enemy advance with Satchel charges when lead armor stalls.",
+      "idealSquadRole": "Machine Gunner & Anti-Tank",
+      "lineOfSight": "Long straight 350m corridor vulnerable to sniper and AT gun fire.",
+      "counterMeasures": "Off-road infantry crawl using drainage ditches with high smoke concealment.",
+      "rawGameCoords": {
+        "gameX": -52800,
+        "gameY": -1200
+      }
+    },
+    {
+      "id": "car_poi_bocage_corridor_north",
+      "name": "Northern Bocage Hedgerow Trench Network",
+      "type": "route",
+      "coordinates": [
+        1596,
+        750
+      ],
+      "advantage": "Ancient Norman sunken hedgerows with thick 2m earthen berms and thorny brush. Immune to direct armored high-velocity tank cannon sights.",
+      "doctrineTactic": "Primary flanking highway for assault squads pushing towards Blactot and Town Center. Squad Leaders should stagger Outposts every 150m along inner berm.",
+      "idealSquadRole": "Assault / Automatic Rifleman",
+      "lineOfSight": "Extremely short (under 25m), optimal for submachine guns, shotguns, and grenades.",
+      "counterMeasures": "Preemptive artillery bombardment or armor HE blast tree-bursts.",
+      "rawGameCoords": {
+        "gameX": -25800,
+        "gameY": 58800
+      }
+    },
+    {
+      "id": "car_poi_mont_halais_ridge",
+      "name": "Mont Halais Southern Overlook",
+      "type": "hill",
+      "coordinates": [
+        495,
+        1346
+      ],
+      "advantage": "Highest southern topographical vantage overlooking the railway tracks, canal approaches, and rural farm fields.",
+      "doctrineTactic": "Establish heavy anti-tank gun (PaK 40 / 57mm M1) in hull-down concealment with dedicated support player dropping 50-supplies boxes.",
+      "idealSquadRole": "Armor / Anti-Tank Gun Crew",
+      "lineOfSight": "Broad strategic panoramic view spanning 600m.",
+      "counterMeasures": "Mortar / recon plane spotted bombing run; smoke screen base of hill.",
+      "rawGameCoords": {
+        "gameX": 33800,
+        "gameY": -51300
+      }
+    }
+  ]
+}
