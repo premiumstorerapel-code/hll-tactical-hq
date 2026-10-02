@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Crosshair, ChevronDown, ChevronUp, Clock, Volume2, ShieldAlert, Sparkles, X } from 'lucide-react';
+import { Target, Crosshair, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { calculateFiringSolution, FACTION_ARTY_SPECS } from '../engine/artillery';
+import { HLLArtilleryIcon } from './HLLIcons';
 import { sound } from '../utils/audio';
 
 export default function ArtilleryWidget({
@@ -10,15 +11,14 @@ export default function ArtilleryWidget({
   onSelectBattery,
   onClearTarget,
   isCollapsed,
-  onToggleCollapse
+  onToggleCollapse,
+  t
 }) {
   const [faction, setFaction] = useState('US');
   const [manualDistance, setManualDistance] = useState(800);
-  const [inputMode, setInputMode] = useState('map'); // 'map' or 'manual'
-  const [firingTimer, setFiringTimer] = useState(null);
+  const [inputMode, setInputMode] = useState('map');
   const [countdown, setCountdown] = useState(0);
 
-  // Compute firing solution
   const currentTargetPos = activeTarget ? activeTarget.coordinates : null;
   const currentBatteryPos = activeBattery ? activeBattery.coordinates : null;
 
@@ -29,7 +29,6 @@ export default function ArtilleryWidget({
     currentTargetPos
   );
 
-  // Countdown timer for flight time
   useEffect(() => {
     let interval = null;
     if (countdown > 0) {
@@ -52,14 +51,14 @@ export default function ArtilleryWidget({
   };
 
   return (
-    <div className="bg-bunker-900/95 backdrop-blur-md border border-bunker-700/80 shadow-2xl rounded-sm text-slate-200 w-80 overflow-hidden font-mono text-xs">
+    <div className="bg-bunker-900/95 backdrop-blur-md border border-bunker-700/80 shadow-2xl rounded-sm text-slate-200 w-80 overflow-hidden font-mono text-xs select-none">
       
-      {/* Widget Header */}
+      {/* Widget Header with Official HLL Artillery Silhouette */}
       <div className="flex items-center justify-between px-3 py-2 bg-bunker-850 border-b border-bunker-700">
         <div className="flex items-center space-x-2">
-          <Target className="w-4 h-4 text-tactical-amber animate-pulse" />
+          <HLLArtilleryIcon size={20} />
           <span className="font-display font-bold tracking-wider text-white text-sm">
-            ARTILLERY BALLISTICS
+            {t.arty_title}
           </span>
         </div>
         <button
@@ -100,7 +99,7 @@ export default function ArtilleryWidget({
               }`}
             >
               <Crosshair className="w-3.5 h-3.5" />
-              <span>Map Targeting</span>
+              <span>{t.arty_map_mode}</span>
             </button>
             <button
               onClick={() => setInputMode('manual')}
@@ -111,7 +110,7 @@ export default function ArtilleryWidget({
               }`}
             >
               <Target className="w-3.5 h-3.5" />
-              <span>Manual Range</span>
+              <span>{t.arty_manual_mode}</span>
             </button>
           </div>
 
@@ -119,9 +118,9 @@ export default function ArtilleryWidget({
           {inputMode === 'map' ? (
             <div className="space-y-2 bg-bunker-950/60 p-2.5 rounded border border-bunker-800">
               <div className="flex items-center justify-between text-[11px] text-slate-400">
-                <span>Active Battery:</span>
+                <span>{t.arty_active_battery}</span>
                 <span className="text-tactical-amber font-bold truncate max-w-[140px]">
-                  {activeBattery ? activeBattery.name : 'Select Battery'}
+                  {activeBattery ? activeBattery.name : 'Cañón #1'}
                 </span>
               </div>
 
@@ -137,36 +136,33 @@ export default function ArtilleryWidget({
                           : 'border-bunker-700 text-slate-400 hover:border-slate-500'
                       }`}
                     >
-                      Gun #{i + 1}
+                      Cañón #{i + 1}
                     </button>
                   ))}
                 </div>
-              ) : (
-                <p className="text-[10px] text-slate-500 italic">No friendly artillery batteries detected on map.</p>
-              )}
+              ) : null}
 
               {/* Target info */}
               <div className="flex items-center justify-between pt-1 border-t border-bunker-800 text-[11px]">
-                <span className="text-slate-400">Target:</span>
+                <span className="text-slate-400">{t.arty_target_label}</span>
                 {activeTarget ? (
                   <div className="flex items-center space-x-1">
                     <span className="text-red-400 font-bold truncate max-w-[120px]">
-                      {activeTarget.name || 'Custom Target'}
+                      {activeTarget.name || 'Objetivo'}
                     </span>
                     <button onClick={onClearTarget} className="text-slate-500 hover:text-red-400">
                       <X className="w-3 h-3" />
                     </button>
                   </div>
                 ) : (
-                  <span className="text-slate-500 italic">Click map or POI</span>
+                  <span className="text-slate-500 italic">{t.arty_click_prompt}</span>
                 )}
               </div>
             </div>
           ) : (
-            /* Manual Distance Slider */
             <div className="space-y-1.5 bg-bunker-950/60 p-2.5 rounded border border-bunker-800">
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-slate-400">Target Range:</span>
+                <span className="text-slate-400">{t.arty_target_range}</span>
                 <span className="text-tactical-amber font-bold text-sm">{manualDistance} m</span>
               </div>
               <input
@@ -189,7 +185,7 @@ export default function ArtilleryWidget({
           {/* Solution Readout (Big MIL Display) */}
           <div className="bg-bunker-950 p-3 rounded border-2 border-bunker-700 text-center relative overflow-hidden">
             <div className="text-[10px] tracking-widest text-slate-400 uppercase mb-1">
-              Required Elevation
+              {t.arty_elevation_req}
             </div>
 
             <div className="flex items-center justify-center space-x-2">
@@ -201,24 +197,24 @@ export default function ArtilleryWidget({
 
             <div className="mt-2 grid grid-cols-3 gap-1 text-[10px] text-slate-300 border-t border-bunker-800 pt-2">
               <div>
-                <span className="text-slate-500 block">Distance</span>
+                <span className="text-slate-500 block">{t.arty_distance}</span>
                 <span className="font-bold text-white">{solution.distance} m</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Azimuth</span>
+                <span className="text-slate-500 block">{t.arty_azimuth}</span>
                 <span className="font-bold text-white">
                   {solution.azimuth !== null ? `${solution.azimuth}°` : '---'}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block">Time of Flight</span>
+                <span className="text-slate-500 block">{t.arty_flight_time}</span>
                 <span className="font-bold text-cyan-400">{solution.flightTimeSeconds} s</span>
               </div>
             </div>
 
             {!solution.inRange && (
               <div className="mt-2 py-0.5 px-2 bg-red-950/80 border border-red-800 text-red-400 text-[10px] font-bold rounded">
-                {solution.status}
+                {solution.distance < 100 ? t.arty_too_close : t.arty_out_of_range}
               </div>
             )}
           </div>
@@ -235,7 +231,7 @@ export default function ArtilleryWidget({
               }`}
             >
               <Crosshair className="w-4 h-4" />
-              <span>{countdown > 0 ? `SHELL IN FLIGHT (${countdown}s)` : 'FIRE TEST SALVO'}</span>
+              <span>{countdown > 0 ? `${t.arty_in_flight} (${countdown}s)` : t.arty_fire_btn}</span>
             </button>
 
             {countdown > 0 && (

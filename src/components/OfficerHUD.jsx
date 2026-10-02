@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Radio, Clock, Compass, Shield, Users, 
-  AlertCircle, CheckCircle2, ChevronRight, Volume2 
-} from 'lucide-react';
+import { HLLOutpostIcon } from './HLLIcons';
 import { sound } from '../utils/audio';
 
 export default function OfficerHUD({
   activeOp,
   onPlaceOpRequest,
-  selectedSupplyZone = 'blue' // 'blue' or 'red'
+  selectedSupplyZone = 'blue',
+  t
 }) {
-  const [opTimer, setOpTimer] = useState(0); // 0 = ready, >0 = cooling down
+  const [opTimer, setOpTimer] = useState(0);
   const [squadDoctrine, setSquadDoctrine] = useState('fire_maneuver');
 
-  // 120s timer countdown
   useEffect(() => {
     let interval = null;
     if (opTimer > 0) {
@@ -32,7 +29,7 @@ export default function OfficerHUD({
 
   const handleDeployOp = () => {
     if (opTimer > 0) return;
-    setOpTimer(120); // 120 seconds cooldown
+    setOpTimer(120);
     sound.playRadioClick();
     if (onPlaceOpRequest) {
       onPlaceOpRequest();
@@ -49,7 +46,7 @@ export default function OfficerHUD({
     <div className="bg-bunker-900 border-b border-bunker-700 p-3 shadow-xl text-slate-200 font-mono select-none">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
         
-        {/* OP (Outpost) 120s Cooldown Engine */}
+        {/* OP (Outpost) 120s Cooldown Engine with Authentic HLL Icon */}
         <div className="flex items-center space-x-3 bg-bunker-950 p-2 rounded border border-bunker-800">
           <div className="relative">
             <button
@@ -61,8 +58,8 @@ export default function OfficerHUD({
                   : 'bg-emerald-600 hover:bg-emerald-500 text-white animate-pulse border border-emerald-400'
               }`}
             >
-              <Radio className="w-4 h-4" />
-              <span>{opTimer > 0 ? `OP COOLDOWN (${formatTimer(opTimer)})` : 'DEPLOY SQUAD OP (READY)'}</span>
+              <HLLOutpostIcon size={20} />
+              <span>{opTimer > 0 ? `${t.op_cooldown} (${formatTimer(opTimer)})` : t.op_ready}</span>
             </button>
 
             {opTimer === 0 && (
@@ -75,9 +72,9 @@ export default function OfficerHUD({
 
           <div className="text-[10px] text-slate-400 hidden sm:block">
             {activeOp ? (
-              <span className="text-emerald-400 font-bold">OP ACTIVE ON MAP</span>
+              <span className="text-emerald-400 font-bold">{t.op_active}</span>
             ) : (
-              <span className="text-amber-400">NO ACTIVE OP PLACED</span>
+              <span className="text-amber-400">{t.op_none}</span>
             )}
           </div>
         </div>
@@ -85,7 +82,7 @@ export default function OfficerHUD({
         {/* Blue Zone vs Red Zone Supply Validator */}
         <div className="flex items-center space-x-2 bg-bunker-950/80 p-2 rounded border border-bunker-800">
           <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-            Garrison Supply Rule:
+            {t.supply_rule_title}
           </span>
           <div className="flex items-center space-x-1.5 text-xs">
             <span className={`px-2 py-0.5 rounded border text-[11px] font-bold ${
@@ -93,26 +90,26 @@ export default function OfficerHUD({
                 ? 'bg-blue-950 border-blue-500 text-blue-300'
                 : 'bg-bunker-900 border-bunker-700 text-slate-500'
             }`}>
-              BLUE ZONE (50 Supplies)
+              {t.blue_zone_rule}
             </span>
             <span className={`px-2 py-0.5 rounded border text-[11px] font-bold ${
               selectedSupplyZone === 'red'
                 ? 'bg-red-950 border-red-500 text-red-300'
                 : 'bg-bunker-900 border-bunker-700 text-slate-500'
             }`}>
-              RED ZONE (100 Supplies)
+              {t.red_zone_rule}
             </span>
           </div>
         </div>
 
-        {/* Squad Tactical Doctrine (Fire & Maneuver) */}
+        {/* Squad Tactical Doctrine */}
         <div className="flex items-center space-x-2">
-          <span className="text-[10px] text-slate-400 uppercase font-bold">Squad Doctrine:</span>
+          <span className="text-[10px] text-slate-400 uppercase font-bold">{t.squad_doctrine_title}</span>
           <div className="flex items-center space-x-1">
             {[
-              { id: 'fire_maneuver', label: 'Fire & Maneuver (MG Base + Flank)' },
-              { id: 'recon_hunt', label: 'Garrison Hunter (Stealth)' },
-              { id: 'point_defense', label: 'Hard Point Fortification' }
+              { id: 'fire_maneuver', label: t.doc_fire_maneuver },
+              { id: 'recon_hunt', label: t.doc_recon_hunt },
+              { id: 'point_defense', label: t.doc_point_defense }
             ].map(doc => (
               <button
                 key={doc.id}

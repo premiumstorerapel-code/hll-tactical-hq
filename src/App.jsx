@@ -13,10 +13,11 @@ import MapTools from './components/MapTools';
 import POIModal from './components/POIModal';
 
 import { 
-  Shield, Radio, Truck, Target, Volume2, VolumeX, 
-  Map, Monitor, Layers, ChevronLeft, ChevronRight, Download, Upload 
+  Shield, Radio, Truck, Volume2, VolumeX, 
+  Map, Monitor, ChevronLeft, ChevronRight, Languages 
 } from 'lucide-react';
 import { sound } from './utils/audio';
+import { translations } from './utils/i18n';
 import { validateGarrisonPlacement } from './engine/geometry';
 
 const AVAILABLE_MAPS = {
@@ -26,11 +27,14 @@ const AVAILABLE_MAPS = {
 };
 
 export default function App() {
+  const [lang, setLang] = useState('es'); // Default to Spanish!
   const [selectedMapKey, setSelectedMapKey] = useState('carentan');
   const [activeRole, setActiveRole] = useState('commander'); // 'commander' | 'officer' | 'tank'
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [crtEnabled, setCrtEnabled] = useState(false);
   const [advisorCollapsed, setAdvisorCollapsed] = useState(false);
+
+  const t = translations[lang] || translations.es;
 
   // Active Map Data
   const mapConfig = AVAILABLE_MAPS[selectedMapKey];
@@ -70,13 +74,11 @@ export default function App() {
       setActiveBattery(batteries[0]);
     }
 
-    // Default starting markers for demonstration:
-    // 1 forward garrison and 1 defensive garrison
     const centerPoint = strongpoints[0]?.coordinates || [1000, 1000];
     const initialGarrisons = [
       {
         id: `def_gar_${Date.now()}_1`,
-        name: 'Defense Garrison #1',
+        name: lang === 'es' ? 'Guarnición Defensiva #1' : 'Defense Garrison #1',
         type: 'friendly_garrison',
         coordinates: [centerPoint[0] - 80, centerPoint[1] + 60],
         team: 'us'
@@ -95,7 +97,7 @@ export default function App() {
     // Garrison Cap Rule Check (8 max)
     if (isGarrison && currentGarrisons.length >= 8) {
       sound.playAlertBeep();
-      alert('GARRISON CAP REACHED (8/8)! Dismantle a redundant garrison before building a new one.');
+      alert(lang === 'es' ? '¡LÍMITE DE GUARNICIONES ALCANZADO (8/8)! Desmonta una guarnición redundante antes de construir una nueva.' : 'GARRISON CAP REACHED (8/8)! Dismantle a redundant garrison before building a new one.');
       return;
     }
 
@@ -104,11 +106,20 @@ export default function App() {
       const check = validateGarrisonPlacement(coords, currentGarrisons);
       if (!check.isValid) {
         sound.playAlertBeep();
-        // Still add with violation flag so the tactical advisor and map visualize it
       }
     }
 
-    const typeNames = {
+    const typeNamesEs = {
+      friendly_garrison: `Guarnición #${currentGarrisons.length + 1}`,
+      friendly_op: `Puesto Avanzado (OP)`,
+      supply_50: `Suministros (50)`,
+      supply_100: `Suministros (100)`,
+      enemy_inf: `Infantería Enemiga`,
+      enemy_tank: `Blindado Enemigo`,
+      enemy_garrison: `Guarnición Enemiga`
+    };
+
+    const typeNamesEn = {
       friendly_garrison: `Garrison #${currentGarrisons.length + 1}`,
       friendly_op: `Squad OP`,
       supply_50: `Supplies (50)`,
@@ -117,6 +128,8 @@ export default function App() {
       enemy_tank: `Enemy Armor`,
       enemy_garrison: `Enemy Garrison`
     };
+
+    const typeNames = lang === 'es' ? typeNamesEs : typeNamesEn;
 
     const newMarker = {
       id: `marker_${Date.now()}`,
@@ -133,12 +146,11 @@ export default function App() {
     setMarkers(prev => prev.filter(m => m.id !== id));
   };
 
-  // Add suggested garrison from Defensive Triangle Advisor
   const handleAcceptSuggestedGarrison = (sug) => {
     const currentGarrisons = markers.filter(m => m.type === 'friendly_garrison');
     if (currentGarrisons.length >= 8) {
       sound.playAlertBeep();
-      alert('GARRISON CAP REACHED (8/8)! Dismantle an existing garrison first.');
+      alert(lang === 'es' ? '¡LÍMITE DE GUARNICIONES ALCANZADO (8/8)!' : 'GARRISON CAP REACHED (8/8)!');
       return;
     }
 
@@ -154,10 +166,8 @@ export default function App() {
     sound.playAbilitySound();
   };
 
-  // Commander ability trigger on map
   const handleCommanderAbility = (ability) => {
     if (ability.id === 'supply_drop') {
-      // Place 100 supply crate near active defense objective
       if (activeDefenseSector) {
         const supplyCoords = [
           activeDefenseSector.coordinates[0] + 40,
@@ -176,15 +186,13 @@ export default function App() {
     }
   };
 
-  // Map Target Click (for artillery)
   const handleMapClickTarget = (coords) => {
     setActiveArtyTarget({
-      name: `Target [${coords[0]}m N, ${coords[1]}m E]`,
+      name: `${lang === 'es' ? 'Blanco' : 'Target'} [${coords[0]}m N, ${coords[1]}m E]`,
       coordinates: coords
     });
   };
 
-  // Lock POI as artillery target
   const handleTargetPOIWithArty = (coords, name) => {
     setActiveArtyTarget({
       name,
@@ -194,7 +202,6 @@ export default function App() {
     sound.playRadioClick();
   };
 
-  // Export / Import Plan
   const handleExportPlan = (toClipboard = false) => {
     const plan = {
       version: "1.0",
@@ -234,10 +241,16 @@ export default function App() {
         }
         sound.playAbilitySound();
       } catch (err) {
-        alert('Invalid battle plan JSON file');
+        alert(lang === 'es' ? 'Archivo JSON de plan de batalla no válido' : 'Invalid battle plan JSON file');
       }
     };
     reader.readAsText(file);
+  };
+
+  const toggleLanguage = () => {
+    const nextLang = lang === 'es' ? 'en' : 'es';
+    setLang(nextLang);
+    sound.playRadioClick();
   };
 
   const friendlyGarrisonsCount = markers.filter(m => m.type === 'friendly_garrison').length;
@@ -253,7 +266,7 @@ export default function App() {
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-tactical-amber animate-ping shrink-0" />
             <h1 className="font-display font-black text-sm sm:text-base lg:text-lg tracking-wider text-white whitespace-nowrap">
-              HELL LET LOOSE <span className="text-tactical-amber font-normal hidden sm:inline">TACTICAL HQ</span>
+              {t.app_title} <span className="text-tactical-amber font-normal hidden sm:inline">{t.app_subtitle}</span>
             </h1>
           </div>
 
@@ -270,9 +283,9 @@ export default function App() {
               }}
               className="bg-transparent text-xs font-mono font-bold text-slate-200 focus:outline-none cursor-pointer"
             >
-              <option value="carentan" className="bg-bunker-900">CARENTAN (2016m)</option>
-              <option value="sme" className="bg-bunker-900">SAINTE-MÈRE-ÉGLISE (1984m)</option>
-              <option value="foy" className="bg-bunker-900">FOY (WINTER 1984m)</option>
+              <option value="carentan" className="bg-bunker-900">{t.map_carentan}</option>
+              <option value="sme" className="bg-bunker-900">{t.map_sme}</option>
+              <option value="foy" className="bg-bunker-900">{t.map_foy}</option>
             </select>
           </div>
         </div>
@@ -291,7 +304,7 @@ export default function App() {
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
-            <span>COMMANDER</span>
+            <span>{t.role_commander}</span>
           </button>
 
           <button
@@ -306,7 +319,7 @@ export default function App() {
             }`}
           >
             <Radio className="w-3.5 h-3.5" />
-            <span>OFFICER (SL)</span>
+            <span>{t.role_officer}</span>
           </button>
 
           <button
@@ -321,16 +334,26 @@ export default function App() {
             }`}
           >
             <Truck className="w-3.5 h-3.5" />
-            <span>TANK CREW</span>
+            <span>{t.role_tank}</span>
           </button>
         </div>
 
-        {/* Right: Audio, CRT, Advisor Toggle */}
+        {/* Right: Language toggle, Audio, CRT, Advisor Toggle */}
         <div className="flex items-center space-x-2">
+          {/* Language Toggle (ES / EN) */}
+          <button
+            onClick={toggleLanguage}
+            title={lang === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish'}
+            className="px-2 py-1 rounded border border-tactical-amber/80 bg-tactical-amber/15 text-tactical-amber hover:bg-tactical-amber hover:text-black font-display font-bold text-xs uppercase tracking-wider transition flex items-center space-x-1"
+          >
+            <Languages className="w-3.5 h-3.5" />
+            <span>{lang.toUpperCase()}</span>
+          </button>
+
           {/* CRT effect toggle */}
           <button
             onClick={() => setCrtEnabled(!crtEnabled)}
-            title="Toggle WWII Bunker CRT Scanlines"
+            title="Efecto CRT Bunker"
             className={`p-1.5 rounded border text-xs font-mono transition flex items-center space-x-1 ${
               crtEnabled
                 ? 'border-tactical-amber text-tactical-amber bg-tactical-amber/10'
@@ -338,7 +361,7 @@ export default function App() {
             }`}
           >
             <Monitor className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">CRT</span>
+            <span className="hidden sm:inline">{t.crt_btn}</span>
           </button>
 
           {/* Audio toggle */}
@@ -347,7 +370,7 @@ export default function App() {
               const muted = sound.toggleMute();
               setIsAudioMuted(muted);
             }}
-            title={isAudioMuted ? 'Unmute Radio Sounds' : 'Mute Radio Sounds'}
+            title={isAudioMuted ? 'Activar Sonidos de Radio' : 'Silenciar'}
             className="p-1.5 rounded border border-bunker-800 text-slate-400 hover:text-white hover:bg-bunker-800 transition"
           >
             {isAudioMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-tactical-amber" />}
@@ -358,7 +381,7 @@ export default function App() {
             onClick={() => setAdvisorCollapsed(!advisorCollapsed)}
             className="px-2.5 py-1 rounded bg-bunker-800 hover:bg-bunker-700 text-slate-200 text-xs font-mono border border-bunker-700 transition flex items-center space-x-1"
           >
-            <span>ADVISOR</span>
+            <span>{t.advisor_btn}</span>
             {advisorCollapsed ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
           </button>
         </div>
@@ -371,6 +394,7 @@ export default function App() {
           <CommanderHUD
             garrisonsCount={friendlyGarrisonsCount}
             onActivateAbility={handleCommanderAbility}
+            t={t}
           />
         )}
         {activeRole === 'officer' && (
@@ -381,10 +405,11 @@ export default function App() {
               setSelectedMarkerType('friendly_op');
             }}
             selectedSupplyZone="blue"
+            t={t}
           />
         )}
         {activeRole === 'tank' && (
-          <TankCrewHUD />
+          <TankCrewHUD t={t} />
         )}
       </div>
 
@@ -409,6 +434,7 @@ export default function App() {
             onAddDrawing={d => setDrawings(prev => [...prev, d])}
             activeDefenseSector={activeDefenseSector}
             activeAttackSector={activeAttackSector}
+            t={t}
           />
 
           {/* Map Tools Palette (Top-Left) */}
@@ -423,6 +449,7 @@ export default function App() {
             onClearDrawings={() => setDrawings([])}
             onExportPlan={handleExportPlan}
             onImportPlan={handleImportPlan}
+            t={t}
           />
 
           {/* Floating Artillery Calculator Widget (Bottom-Left) */}
@@ -435,6 +462,7 @@ export default function App() {
               onClearTarget={() => setActiveArtyTarget(null)}
               isCollapsed={artyWidgetCollapsed}
               onToggleCollapse={() => setArtyWidgetCollapsed(!artyWidgetCollapsed)}
+              t={t}
             />
           </div>
         </div>
@@ -450,6 +478,7 @@ export default function App() {
             markers={markers}
             onAcceptSuggestedGarrison={handleAcceptSuggestedGarrison}
             mapConfig={mapConfig}
+            t={t}
           />
         </aside>
 
@@ -462,6 +491,7 @@ export default function App() {
           mapConfig={mapConfig}
           onClose={() => setSelectedPOI(null)}
           onTargetWithArty={handleTargetPOIWithArty}
+          t={t}
         />
       )}
 

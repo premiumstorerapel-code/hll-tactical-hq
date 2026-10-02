@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { 
   ShieldAlert, AlertTriangle, CheckCircle2, Navigation, 
-  Eye, CornerDownRight, Compass, Shield, Crosshair, Plus 
+  CornerDownRight, Compass, Shield, Crosshair, Plus 
 } from 'lucide-react';
 import { 
   analyzeDefensiveTriangle, 
   analyzeAssaultVectors, 
   analyzeBlindSpots, 
-  validateGarrisonPlacement,
   calculateDistance 
 } from '../engine/geometry';
+import { HLLGarrisonIcon } from './HLLIcons';
 import { sound } from '../utils/audio';
 
 export default function TacticalAdvisor({
@@ -20,14 +20,14 @@ export default function TacticalAdvisor({
   strongpoints = [],
   markers = [],
   onAcceptSuggestedGarrison,
-  mapConfig
+  mapConfig,
+  t
 }) {
   const [tab, setTab] = useState('defense'); // 'defense' | 'attack' | 'radar'
 
   const friendlyGarrisons = markers.filter(m => m.type === 'friendly_garrison');
   const friendlySpawns = markers.filter(m => m.type === 'friendly_garrison' || m.type === 'friendly_op');
 
-  // 1. Defensive Triangle Analysis
   const triangleAnalysis = analyzeDefensiveTriangle(
     activeDefenseSector,
     friendlyGarrisons,
@@ -35,17 +35,14 @@ export default function TacticalAdvisor({
     mapConfig?.heightMeters || 2000
   );
 
-  // 2. Assault Vector Analysis
   const vectorAnalysis = analyzeAssaultVectors(
     activeAttackSector,
     friendlySpawns,
     mapConfig?.points || []
   );
 
-  // 3. Blind Spot Analysis
   const blindSpots = analyzeBlindSpots(activeDefenseSector, markers.filter(m => m.team === 'us' || m.type.startsWith('friendly')));
 
-  // 4. Proximity Rule Violations check among all friendly garrisons
   const proximityViolations = [];
   for (let i = 0; i < friendlyGarrisons.length; i++) {
     for (let j = i + 1; j < friendlyGarrisons.length; j++) {
@@ -72,15 +69,15 @@ export default function TacticalAdvisor({
           <div className="flex items-center space-x-2">
             <Compass className="w-4 h-4 text-tactical-amber animate-spin" style={{ animationDuration: '10s' }} />
             <h2 className="font-display font-bold tracking-wider text-sm text-white uppercase">
-              TACTICAL ADVISOR
+              {t.advisor_title}
             </h2>
           </div>
           <span className="text-[10px] text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
-            DETERMINISTIC AI
+            {t.advisor_badge}
           </span>
         </div>
         <p className="text-[10px] text-slate-400 mt-1">
-          Real-time geometric analysis & doctrinal advice
+          {t.advisor_subtitle}
         </p>
       </div>
 
@@ -88,7 +85,7 @@ export default function TacticalAdvisor({
       <div className="p-3 bg-bunker-950/80 border-b border-bunker-800 space-y-2">
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1 flex items-center">
-            <Shield className="w-3 h-3 mr-1 text-blue-400" /> Active Defense Objective
+            <Shield className="w-3 h-3 mr-1 text-blue-400" /> {t.active_defense_label}
           </label>
           <select
             value={activeDefenseSector?.id || ''}
@@ -108,7 +105,7 @@ export default function TacticalAdvisor({
 
         <div>
           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1 flex items-center">
-            <Crosshair className="w-3 h-3 mr-1 text-red-400" /> Active Assault Objective
+            <Crosshair className="w-3 h-3 mr-1 text-red-400" /> {t.active_attack_label}
           </label>
           <select
             value={activeAttackSector?.id || ''}
@@ -137,7 +134,7 @@ export default function TacticalAdvisor({
               : 'border-transparent text-slate-400 hover:text-white'
           }`}
         >
-          DEFENSE TRIANGLE
+          {t.tab_defense}
         </button>
         <button
           onClick={() => setTab('attack')}
@@ -147,7 +144,7 @@ export default function TacticalAdvisor({
               : 'border-transparent text-slate-400 hover:text-white'
           }`}
         >
-          ASSAULT VECTOR
+          {t.tab_attack}
         </button>
         <button
           onClick={() => setTab('radar')}
@@ -157,23 +154,23 @@ export default function TacticalAdvisor({
               : 'border-transparent text-slate-400 hover:text-white'
           }`}
         >
-          BLIND SPOTS
+          {t.tab_radar}
         </button>
       </div>
 
       {/* Advisor Tab Content Body */}
       <div className="flex-1 overflow-y-auto p-3 space-y-4">
         
-        {/* 200m Rule Violations Alert Banner (Always Visible if Violation exists) */}
+        {/* 200m Rule Violations Alert Banner */}
         {proximityViolations.length > 0 && (
           <div className="bg-red-950/80 border-2 border-red-600 p-3 rounded text-red-200 animate-alert-flash space-y-1.5">
             <div className="flex items-center text-red-400 font-bold text-xs uppercase tracking-wider">
               <AlertTriangle className="w-4 h-4 mr-1.5 shrink-0" />
-              ILLEGAL 200m GARRISON VIOLATION!
+              {t.violation_title}
             </div>
             {proximityViolations.map((v, i) => (
               <p key={i} className="text-[11px]">
-                • <strong className="text-white">{v.g1.name}</strong> and <strong className="text-white">{v.g2.name}</strong> are only <span className="text-tactical-amber font-bold">{v.distance}m</span> apart (Shortfall: {v.deficit}m). Game engine will block spawn creation!
+                • <strong className="text-white">{v.g1.name}</strong> y <strong className="text-white">{v.g2.name}</strong> {t.violation_desc} <span className="text-tactical-amber font-bold">{v.distance}m</span> {t.violation_shortfall} {v.deficit}m). {t.violation_block}
               </p>
             ))}
           </div>
@@ -184,7 +181,6 @@ export default function TacticalAdvisor({
           <div className="space-y-3">
             {triangleAnalysis ? (
               <>
-                {/* Status Card */}
                 <div className={`p-3 rounded border ${
                   triangleAnalysis.severity === 'CRITICAL'
                     ? 'bg-red-950/40 border-red-700/80 text-red-200'
@@ -199,23 +195,26 @@ export default function TacticalAdvisor({
                       ) : (
                         <CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-400" />
                       )}
-                      STATUS: {triangleAnalysis.severity}
+                      {t.status_label} {triangleAnalysis.severity === 'CRITICAL' ? 'COLAPSO CRÍTICO' : triangleAnalysis.severity === 'HIGH ALERT' ? 'ALERTA ALTA' : 'ÓPTIMO'}
                     </span>
                     <span className="font-bold text-[11px] px-2 py-0.5 rounded bg-black/40 border border-current">
-                      {triangleAnalysis.count} / 2 GARRISONS
+                      {triangleAnalysis.count} / 2 GUARNICIONES
                     </span>
                   </div>
                   <p className="text-[11px] leading-relaxed">
-                    {triangleAnalysis.message}
+                    {triangleAnalysis.count === 0
+                      ? t.collapse_risk
+                      : triangleAnalysis.count === 1
+                      ? t.vuln_wipe_risk
+                      : t.optimal_defense}
                   </p>
                 </div>
 
-                {/* Algorithmic Suggestions */}
                 {triangleAnalysis.suggestions.length > 0 && (
                   <div className="space-y-2">
                     <div className="text-[10px] text-tactical-amber font-bold uppercase tracking-wider flex items-center">
                       <CornerDownRight className="w-3.5 h-3.5 mr-1" />
-                      Calculated Backup Garrisons (Safe Blue Zone):
+                      {t.backup_garrisons_title}
                     </div>
 
                     {triangleAnalysis.suggestions.map((sug, i) => (
@@ -224,9 +223,12 @@ export default function TacticalAdvisor({
                         className="bg-bunker-850 p-2.5 rounded border border-bunker-700 hover:border-tactical-amber transition space-y-1.5"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-white text-xs">{sug.name}</span>
+                          <span className="font-bold text-white text-xs flex items-center gap-1.5">
+                            <HLLGarrisonIcon size={16} />
+                            <span>{sug.name}</span>
+                          </span>
                           <span className="text-[10px] text-tactical-amber font-bold">
-                            {sug.distanceToCap}m {sug.cardinal}
+                            {sug.distanceToCap}m ({sug.cardinal})
                           </span>
                         </div>
                         <p className="text-[10px] text-slate-400">
@@ -240,27 +242,26 @@ export default function TacticalAdvisor({
                           className="w-full py-1 px-2 bg-tactical-amber/20 hover:bg-tactical-amber text-tactical-amber hover:text-black border border-tactical-amber font-display font-bold text-[10px] uppercase tracking-wider rounded transition flex items-center justify-center space-x-1"
                         >
                           <Plus className="w-3.5 h-3.5" />
-                          <span>Accept & Deploy to Map</span>
+                          <span>{t.btn_accept_deploy}</span>
                         </button>
                       </div>
                     ))}
                   </div>
                 )}
 
-                {/* Doctrinal Advice Box */}
                 <div className="bg-bunker-850 p-3 rounded border border-bunker-700 text-slate-300 space-y-1">
                   <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Garrison Doctrine Manual:
+                    {t.garrison_manual_title}
                   </div>
                   <p className="text-[10px] text-slate-400 leading-normal">
-                    • Never place the only garrison inside the capture circle (easy target for bombing run).<br />
-                    • Build a triangle of 3 garrisons ~200m apart surrounding the sector.<br />
-                    • Blue zone garrisons only require 50 supplies (1 support drop).
+                    {t.garrison_manual_1}<br />
+                    {t.garrison_manual_2}<br />
+                    {t.garrison_manual_3}
                   </p>
                 </div>
               </>
             ) : (
-              <p className="text-slate-500 italic text-center py-4">Select a defensive sector to evaluate.</p>
+              <p className="text-slate-500 italic text-center py-4">Selecciona un sector defensivo.</p>
             )}
           </div>
         )}
@@ -282,23 +283,24 @@ export default function TacticalAdvisor({
                       ) : (
                         <CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-400" />
                       )}
-                      VECTOR: {vectorAnalysis.status}
+                      VECTOR: {vectorAnalysis.isFunneled ? 'EMBUDO DETECTADO' : 'DISPERSO'}
                     </span>
                     <span className="font-bold text-[10px] px-2 py-0.5 rounded bg-black/40 border border-current">
-                      SPREAD: {vectorAnalysis.angularSpread}°
+                      ABANICO: {vectorAnalysis.angularSpread}°
                     </span>
                   </div>
                   <p className="text-[11px] leading-relaxed">
-                    {vectorAnalysis.message}
+                    {vectorAnalysis.isFunneled
+                      ? `${t.funnel_warning_title} ${t.funnel_warning_desc} ${vectorAnalysis.angularSpread}° (${vectorAnalysis.cardinalApproach}). ${t.funnel_warning_sub}`
+                      : t.healthy_vector}
                   </p>
                 </div>
 
-                {/* Flank Corridors Suggestions */}
                 {vectorAnalysis.flankSuggestions && vectorAnalysis.flankSuggestions.length > 0 && (
                   <div className="space-y-2">
                     <div className="text-[10px] text-tactical-amber font-bold uppercase tracking-wider flex items-center">
                       <Navigation className="w-3.5 h-3.5 mr-1" />
-                      Recommended 90° Flanking Routes:
+                      {t.flank_routes_title}
                     </div>
 
                     {vectorAnalysis.flankSuggestions.map((flank, idx) => (
@@ -307,7 +309,9 @@ export default function TacticalAdvisor({
                         className="bg-bunker-850 p-2.5 rounded border border-bunker-700 space-y-1"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-white text-xs">{flank.side}</span>
+                          <span className="font-bold text-white text-xs">
+                            {idx === 0 ? t.flank_left : t.flank_right}
+                          </span>
                           <span className="text-[10px] text-cyan-400 font-bold">Vector: {flank.angle}°</span>
                         </div>
                         <p className="text-[10px] text-slate-300">
@@ -322,7 +326,7 @@ export default function TacticalAdvisor({
               <div className="bg-bunker-850 p-4 rounded border border-bunker-700 text-center text-slate-400 space-y-2">
                 <Crosshair className="w-8 h-8 text-tactical-amber mx-auto opacity-50" />
                 <p className="text-xs">
-                  {vectorAnalysis ? vectorAnalysis.message : "Select active attack objective"}
+                  {t.flank_insufficient}
                 </p>
               </div>
             )}
@@ -333,7 +337,7 @@ export default function TacticalAdvisor({
         {tab === 'radar' && (
           <div className="space-y-3">
             <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-              360° Sector Screening Radar (300m Radius):
+              {t.radar_title}
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -352,19 +356,19 @@ export default function TacticalAdvisor({
                       {quad.quadrant}
                     </span>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/40">
-                      {quad.isBlind ? 'BLIND' : `${quad.count} Spawns`}
+                      {quad.isBlind ? 'CIEGO' : `${quad.count} Spawns`}
                     </span>
                   </div>
                   <p className="text-[9px] text-slate-300/90 leading-normal">
-                    {quad.threatAssessment}
+                    {quad.isBlind ? t.blind_spot_vuln : t.blind_spot_secured}
                   </p>
                 </div>
               ))}
             </div>
 
             <div className="bg-bunker-850 p-3 rounded border border-bunker-700 text-[10px] text-slate-400">
-              <span className="text-tactical-amber font-bold block mb-1">RECON INFILTRATION WARNING:</span>
-              Enemy sniper teams systematically exploit unmonitored quadrants to establish stealth OPs in your rear artillery batteries. Ensure all 4 quadrants have active screening!
+              <span className="text-tactical-amber font-bold block mb-1">{t.recon_warning_title}</span>
+              {t.recon_warning_desc}
             </div>
           </div>
         )}

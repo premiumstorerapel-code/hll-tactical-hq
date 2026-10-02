@@ -1,8 +1,8 @@
 import React from 'react';
-import { Shield, Crosshair, Eye, AlertTriangle, X, Compass, MapPin } from 'lucide-react';
+import { Shield, Crosshair, Eye, AlertTriangle, X, MapPin } from 'lucide-react';
 import { getGridKeypad } from '../engine/geometry';
 
-export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) {
+export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty, t }) {
   if (!poi) return null;
 
   const typeColors = {
@@ -15,12 +15,12 @@ export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) 
   };
 
   const typeLabels = {
-    building: "FORTIFIED STRUCTURE",
-    chokepoint: "CRITICAL CHOKEPOINT",
-    route: "CONCEALED FLANK ROUTE",
-    hill: "ELEVATED VANTAGE / HULL-DOWN",
-    strongpoint: "SECTOR STRONGPOINT",
-    artillery: "ARTILLERY BATTERY"
+    building: "ESTRUCTURA FORTIFICADA",
+    chokepoint: "CUELLO DE BOTELLA CRÍTICO",
+    route: "RUTA DE FLANQUEO PROTEGIDA",
+    hill: "COLINA DE VENTAJA / HULL-DOWN",
+    strongpoint: "SECTOR DE CAPTURA",
+    artillery: "BATERÍA DE ARTILLERÍA"
   };
 
   const gridRef = getGridKeypad(poi.coordinates, mapConfig.widthMeters, mapConfig.heightMeters);
@@ -60,7 +60,7 @@ export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) 
           {/* Advantage Section */}
           <div className="bg-bunker-800/80 border-l-4 border-tactical-amber p-3.5 rounded-r">
             <div className="flex items-center text-tactical-amber text-xs font-mono font-bold uppercase tracking-wider mb-1">
-              <Shield className="w-4 h-4 mr-1.5" /> Tactical Advantage
+              <Shield className="w-4 h-4 mr-1.5" /> {t.poi_tactical_adv}
             </div>
             <p className="text-sm text-slate-300 leading-relaxed">
               {poi.advantage}
@@ -70,7 +70,7 @@ export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) 
           {/* Military Doctrine Tactic */}
           <div className="bg-bunker-800/80 border-l-4 border-emerald-500 p-3.5 rounded-r">
             <div className="flex items-center text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
-              <Crosshair className="w-4 h-4 mr-1.5" /> Doctrine & Orders
+              <Crosshair className="w-4 h-4 mr-1.5" /> {t.poi_doctrine}
             </div>
             <p className="text-sm text-slate-200 leading-relaxed font-mono">
               {poi.doctrineTactic}
@@ -80,18 +80,18 @@ export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) 
           {/* Grid Information Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div className="bg-bunker-850 p-3 rounded border border-bunker-700">
-              <span className="text-slate-400 font-mono block uppercase mb-1">Recommended Squad Role</span>
+              <span className="text-slate-400 font-mono block uppercase mb-1">{t.poi_recommended_role}</span>
               <span className="font-bold text-tactical-amber text-sm font-mono">
-                {poi.idealSquadRole || "Officer / Infantry"}
+                {poi.idealSquadRole || "Oficial / Ametrallador"}
               </span>
             </div>
 
             <div className="bg-bunker-850 p-3 rounded border border-bunker-700">
               <span className="text-slate-400 font-mono block uppercase mb-1 flex items-center">
-                <Eye className="w-3.5 h-3.5 mr-1 text-cyan-400" /> Line of Sight
+                <Eye className="w-3.5 h-3.5 mr-1 text-cyan-400" /> {t.poi_line_of_sight}
               </span>
               <span className="text-slate-300 font-mono">
-                {poi.lineOfSight || "Standard 150m sector coverage"}
+                {poi.lineOfSight || "Cobertura sectorial estándar de 150m"}
               </span>
             </div>
           </div>
@@ -100,7 +100,7 @@ export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) 
           {poi.counterMeasures && (
             <div className="bg-red-950/30 border border-red-900/60 p-3.5 rounded">
               <div className="flex items-center text-red-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
-                <AlertTriangle className="w-4 h-4 mr-1.5" /> Enemy Counter-Measures
+                <AlertTriangle className="w-4 h-4 mr-1.5" /> {t.poi_countermeasures}
               </div>
               <p className="text-xs text-red-200/90 leading-relaxed font-mono">
                 {poi.counterMeasures}
@@ -119,14 +119,14 @@ export default function POIModal({ poi, mapConfig, onClose, onTargetWithArty }) 
             className="flex items-center px-4 py-2 bg-tactical-amber hover:bg-tactical-amber-glow text-black font-display font-bold text-xs uppercase tracking-wider rounded transition shadow"
           >
             <Crosshair className="w-4 h-4 mr-1.5" />
-            Lock In Artillery Calculator
+            {t.poi_lock_arty}
           </button>
 
           <button
             onClick={onClose}
             className="px-4 py-2 bg-bunker-700 hover:bg-bunker-600 text-slate-300 font-mono text-xs uppercase tracking-wider rounded transition"
           >
-            Close Directive
+            {t.poi_close}
           </button>
         </div>
 

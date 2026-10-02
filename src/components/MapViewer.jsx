@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { calculateDistance, calculateBearing, getGridKeypad } from '../engine/geometry';
+import { getHLLMarkerHTML } from './HLLIcons';
 import { sound } from '../utils/audio';
 
 export default function MapViewer({
@@ -19,7 +20,8 @@ export default function MapViewer({
   drawings = [],
   onAddDrawing,
   activeDefenseSector,
-  activeAttackSector
+  activeAttackSector,
+  t
 }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -74,19 +76,16 @@ export default function MapViewer({
     layersRef.current.ruler = L.layerGroup().addTo(map);
     layersRef.current.drawings = L.layerGroup().addTo(map);
 
-    // Draw Military 200m x 200m Grid
     renderGrid(map, width, height);
 
     mapInstanceRef.current = map;
 
-    // Mouse move coordinate tracker
     map.on('mousemove', (e) => {
       const lat = Math.round(e.latlng.lat);
       const lng = Math.round(e.latlng.lng);
       const grid = getGridKeypad([lat, lng], width, height);
       setMousePos({ lat, lng, grid });
 
-      // If drawing in progress
       if (currentDrawPointsRef.current.length > 0) {
         currentDrawPointsRef.current.push([e.latlng.lat, e.latlng.lng]);
         updateCurrentDrawing(currentDrawPointsRef.current);
@@ -99,12 +98,10 @@ export default function MapViewer({
     };
   }, [mapConfig.id]);
 
-  // Render 200m military grid lines & labels (A-J, 1-10)
   const renderGrid = (map, width, height) => {
     const gridLayer = layersRef.current.grid;
     gridLayer.clearLayers();
 
-    // Vertical lines (A to J)
     for (let x = 0; x <= width; x += 200) {
       L.polyline([[0, x], [height, x]], {
         color: '#ffffff',
@@ -113,12 +110,11 @@ export default function MapViewer({
         dashArray: '3, 6'
       }).addTo(gridLayer);
 
-      // Sector Letters at North edge
       if (x < width) {
         const colLetter = String.fromCharCode(65 + Math.floor(x / 200));
         const icon = L.divIcon({
           className: 'grid-col-label',
-          html: `<div style="color: rgba(245, 158, 11, 0.7); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; text-shadow: 0 0 4px #000;">${colLetter}</div>`,
+          html: `<div style="color: rgba(245, 158, 11, 0.75); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; text-shadow: 0 0 4px #000;">${colLetter}</div>`,
           iconSize: [20, 20],
           iconAnchor: [-90, -10]
         });
@@ -126,7 +122,6 @@ export default function MapViewer({
       }
     }
 
-    // Horizontal lines (1 to 10)
     for (let y = 0; y <= height; y += 200) {
       L.polyline([[y, 0], [y, width]], {
         color: '#ffffff',
@@ -135,12 +130,11 @@ export default function MapViewer({
         dashArray: '3, 6'
       }).addTo(gridLayer);
 
-      // Sector Numbers at West edge (North is row 1)
       if (y < height) {
         const rowNum = 10 - Math.floor(y / 200);
         const icon = L.divIcon({
           className: 'grid-row-label',
-          html: `<div style="color: rgba(245, 158, 11, 0.7); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; text-shadow: 0 0 4px #000;">${rowNum}</div>`,
+          html: `<div style="color: rgba(245, 158, 11, 0.75); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; text-shadow: 0 0 4px #000;">${rowNum}</div>`,
           iconSize: [20, 20],
           iconAnchor: [-10, 90]
         });
@@ -149,7 +143,6 @@ export default function MapViewer({
     }
   };
 
-  // Map Click Handler depending on Active Tool
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -183,7 +176,6 @@ export default function MapViewer({
           currentDrawPointsRef.current = [];
         }
       } else {
-        // In select mode, clicking can also set target for artillery
         onMapClickTarget(clickCoords);
       }
     };
@@ -196,7 +188,6 @@ export default function MapViewer({
     };
   }, [activeTool, selectedMarkerType, rulerState, isDrawing, drawColor]);
 
-  // Update Ruler rendering when measuring
   useEffect(() => {
     const rulerLayer = layersRef.current.ruler;
     if (!rulerLayer) return;
@@ -216,17 +207,15 @@ export default function MapViewer({
 
       const dist = Math.round(calculateDistance(p1, p2));
       const bearing = calculateBearing(p1, p2);
-      const sprintTimeSec = Math.round(dist / 4.2); // HLL infantry sprint speed ~4.2 m/s
-      const tankTimeSec = Math.round(dist / 7.0);   // Tank speed ~7 m/s
+      const sprintTimeSec = Math.round(dist / 4.2);
+      const tankTimeSec = Math.round(dist / 7.0);
 
-      // Draw ruler line
       L.polyline([p1, p2], {
         color: '#f59e0b',
         weight: 2.5,
         dashArray: '6, 6'
       }).addTo(rulerLayer);
 
-      // Start circle marker
       L.circleMarker(p1, {
         radius: 5,
         color: '#f59e0b',
@@ -234,9 +223,8 @@ export default function MapViewer({
         fillOpacity: 1
       }).addTo(rulerLayer);
 
-      // End circle marker with tooltip
       const midPoint = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2];
-      const tooltip = L.tooltip({
+      L.tooltip({
         permanent: true,
         direction: 'top',
         className: 'ruler-tooltip'
@@ -245,7 +233,7 @@ export default function MapViewer({
         .setContent(
           `<div style="background: #11171b; border: 1px solid #f59e0b; padding: 4px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #fff;">
             <strong style="color: #f59e0b; font-size: 13px;">${dist}m</strong> | ${bearing}°<br/>
-            <span style="color: #94a3b8;">Sprint: ${sprintTimeSec}s | Tank: ${tankTimeSec}s</span>
+            <span style="color: #94a3b8;">Sprint: ${sprintTimeSec}s | Tanque: ${tankTimeSec}s</span>
           </div>`
         )
         .addTo(rulerLayer);
@@ -255,24 +243,20 @@ export default function MapViewer({
     return () => map.off('mousemove', onRulerMove);
   }, [activeTool, rulerState.start]);
 
-  // Update in-progress drawing preview
   const updateCurrentDrawing = (points) => {
     const drawingsLayer = layersRef.current.drawings;
     if (!drawingsLayer) return;
     drawingsLayer.clearLayers();
 
-    // Render stored drawings
     drawings.forEach(d => {
       L.polyline(d.points, { color: d.color, weight: 3, opacity: 0.85 }).addTo(drawingsLayer);
     });
 
-    // Render current active stroke
     if (points.length > 1) {
       L.polyline(points, { color: drawColor, weight: 3, opacity: 0.9, dashArray: '4, 4' }).addTo(drawingsLayer);
     }
   };
 
-  // Re-render drawings when drawings list updates
   useEffect(() => {
     const drawingsLayer = layersRef.current.drawings;
     if (!drawingsLayer) return;
@@ -297,7 +281,6 @@ export default function MapViewer({
       const isAttacking = activeAttackSector?.id === poi.id;
 
       if (isStrongpoint) {
-        // Draw 50m cap circle around strongpoint
         L.circle(poi.coordinates, {
           radius: 50,
           color: isDefending ? '#3b82f6' : isAttacking ? '#ef4444' : '#f59e0b',
@@ -307,7 +290,6 @@ export default function MapViewer({
           dashArray: '4, 4'
         }).addTo(poisLayer);
 
-        // Strongpoint NATO flag badge
         const badgeColor = poi.team === 'ger' ? '#ef4444' : poi.team === 'us' ? '#3b82f6' : '#eab308';
         const iconHtml = `
           <div style="background: ${isDefending ? '#1e3a8a' : isAttacking ? '#7f1d1d' : '#11171b'}; 
@@ -315,7 +297,7 @@ export default function MapViewer({
                       padding: 2px 6px; border-radius: 3px; font-family: 'Chakra Petch', sans-serif; 
                       font-size: 10px; font-weight: bold; color: #fff; white-space: nowrap; 
                       box-shadow: 0 0 10px rgba(0,0,0,0.8); cursor: pointer; text-align: center;">
-            ${isDefending ? '🛡️ [DEFENSE] ' : isAttacking ? '⚔️ [ATTACK] ' : ''}${poi.name}
+            ${isDefending ? '🛡️ [DEF] ' : isAttacking ? '⚔️ [ATK] ' : ''}${poi.name}
           </div>
         `;
         const icon = L.divIcon({
@@ -330,23 +312,22 @@ export default function MapViewer({
           onSelectPOI(poi);
         });
       } else if (isArty) {
-        // Artillery battery gun
         const isAxis = poi.team === 'ger';
+        const color = isAxis ? '#ef4444' : '#3b82f6';
         const iconHtml = `
-          <div style="background: ${isAxis ? '#7f1d1d' : '#1e3a8a'}; border: 1px solid ${isAxis ? '#ef4444' : '#3b82f6'}; 
-                      width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+          <div style="background: ${isAxis ? '#380d0d' : '#0c2340'}; border: 1.5px solid ${color}; 
+                      width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
                       color: #fff; font-size: 11px; cursor: pointer; box-shadow: 0 0 8px rgba(0,0,0,0.9);">
             🎯
           </div>
         `;
-        const icon = L.divIcon({ className: 'arty-gun-pin', html: iconHtml, iconAnchor: [10, 10] });
+        const icon = L.divIcon({ className: 'arty-gun-pin', html: iconHtml, iconAnchor: [11, 11] });
         const marker = L.marker(poi.coordinates, { icon }).addTo(poisLayer);
         marker.on('click', () => {
           sound.playRadioClick();
           onSelectPOI(poi);
         });
       } else {
-        // Tactical POI (Building, Chokepoint, Route, Hill)
         const typeIcons = {
           building: '🏢',
           chokepoint: '🛑',
@@ -357,8 +338,7 @@ export default function MapViewer({
         const iconHtml = `
           <div style="background: #11171b; border: 1.5px solid #f59e0b; width: 24px; height: 24px; 
                       border-radius: 4px; display: flex; align-items: center; justify-content: center; 
-                      font-size: 12px; cursor: pointer; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); 
-                      transition: transform 0.15s ease-out;">
+                      font-size: 12px; cursor: pointer; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);">
             ${iconChar}
           </div>
         `;
@@ -372,7 +352,7 @@ export default function MapViewer({
     });
   }, [mapConfig, activeDefenseSector, activeAttackSector]);
 
-  // Render Placed Markers & 200m Exclusion Circles
+  // Render Placed Markers using Authentic In-Game HLL SVGs
   useEffect(() => {
     const markersLayer = layersRef.current.markers;
     const circlesLayer = layersRef.current.circles;
@@ -387,7 +367,6 @@ export default function MapViewer({
       const isFriendlyGar = m.type === 'friendly_garrison';
       const isFriendlyOp = m.type === 'friendly_op';
 
-      // 200m Garrison Rule Check for this specific garrison
       let hasProximityViolation = false;
       if (isFriendlyGar) {
         for (const other of friendlyGarrisons) {
@@ -405,10 +384,10 @@ export default function MapViewer({
       if (isFriendlyGar) {
         L.circle(m.coordinates, {
           radius: 200,
-          color: hasProximityViolation ? '#ef4444' : '#f59e0b',
+          color: hasProximityViolation ? '#ef4444' : '#10b981',
           weight: hasProximityViolation ? 2.5 : 1.5,
           dashArray: '6, 6',
-          fillColor: hasProximityViolation ? '#ef4444' : '#f59e0b',
+          fillColor: hasProximityViolation ? '#ef4444' : '#10b981',
           fillOpacity: hasProximityViolation ? 0.2 : 0.08,
           interactive: false
         }).addTo(circlesLayer);
@@ -416,45 +395,17 @@ export default function MapViewer({
         // Draw 50m OP safe radius
         L.circle(m.coordinates, {
           radius: 50,
-          color: '#22c55e',
+          color: '#34d399',
           weight: 1,
           dashArray: '3, 3',
-          fillColor: '#22c55e',
-          fillOpacity: 0.1,
+          fillColor: '#34d399',
+          fillOpacity: 0.12,
           interactive: false
         }).addTo(circlesLayer);
       }
 
-      // Marker Icon
-      const typeSymbols = {
-        friendly_garrison: '🛡️',
-        friendly_op: '📻',
-        supply_50: '📦',
-        supply_100: '📦',
-        enemy_inf: '🎯',
-        enemy_tank: '🚩',
-        enemy_garrison: '⚠️'
-      };
-
-      const markerBg = hasProximityViolation
-        ? '#ef4444'
-        : m.type.startsWith('friendly')
-        ? '#059669'
-        : m.type.startsWith('supply')
-        ? '#d97706'
-        : '#dc2626';
-
-      const iconHtml = `
-        <div style="background: ${markerBg}; border: 2px solid ${hasProximityViolation ? '#ffffff' : '#fcd34d'}; 
-                    padding: 3px 6px; border-radius: 4px; display: flex; align-items: center; gap: 4px;
-                    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; 
-                    color: #fff; box-shadow: 0 0 12px rgba(0,0,0,0.85); white-space: nowrap; cursor: pointer;">
-          <span>${typeSymbols[m.type] || '📍'}</span>
-          <span>${m.name}</span>
-          ${hasProximityViolation ? '<span style="background: #000; color: #f87171; padding: 0 3px; border-radius: 2px; font-size: 9px;">&lt;200m!</span>' : ''}
-        </div>
-      `;
-
+      // Authentic HLL In-Game Symbol Badge
+      const iconHtml = getHLLMarkerHTML(m.type, m.name, hasProximityViolation);
       const icon = L.divIcon({
         className: 'user-placed-marker',
         html: iconHtml,
@@ -463,14 +414,13 @@ export default function MapViewer({
 
       const leafletMarker = L.marker(m.coordinates, { icon }).addTo(markersLayer);
 
-      // Popup to remove or inspect
       leafletMarker.bindPopup(`
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #111;">
           <strong>${m.name}</strong><br/>
           <span>${m.type.replace('_', ' ').toUpperCase()}</span><br/>
-          ${hasProximityViolation ? '<span style="color: red; font-weight: bold;">VIOLATES 200M RULE!</span><br/>' : ''}
+          ${hasProximityViolation ? '<span style="color: red; font-weight: bold;">¡VIOLA REGLA DE 200M!</span><br/>' : ''}
           <button id="del-${m.id}" style="margin-top: 6px; background: #dc2626; color: #fff; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">
-            Remove Marker
+            Eliminar Marcador
           </button>
         </div>
       `);
@@ -487,7 +437,7 @@ export default function MapViewer({
     });
   }, [markers]);
 
-  // Render Artillery Target Line and Dispersion Circle
+  // Artillery Targeting Line
   useEffect(() => {
     const artyLayer = layersRef.current.artyLine;
     if (!artyLayer) return;
@@ -497,14 +447,12 @@ export default function MapViewer({
       const p1 = activeBattery.coordinates;
       const p2 = activeTarget.coordinates;
 
-      // Targeting line
       L.polyline([p1, p2], {
         color: '#f59e0b',
         weight: 2,
         dashArray: '8, 8'
       }).addTo(artyLayer);
 
-      // Dispersion ring at target (20m radius)
       L.circle(p2, {
         radius: 20,
         color: '#ef4444',
@@ -513,7 +461,6 @@ export default function MapViewer({
         fillOpacity: 0.25
       }).addTo(artyLayer);
 
-      // Target Crosshair icon
       const iconHtml = `
         <div style="color: #ef4444; font-size: 18px; font-weight: bold; text-shadow: 0 0 6px #000; pointer-events: none;">
           🎯
@@ -528,22 +475,19 @@ export default function MapViewer({
 
   return (
     <div className="relative w-full h-full bg-bunker-950 overflow-hidden">
-      
-      {/* Leaflet Map DOM Element */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Military Bottom-Right Coordinate HUD Readout */}
+      {/* Coordinate HUD Readout */}
       <div className="absolute bottom-4 right-4 z-[1000] bg-bunker-900/90 backdrop-blur-md border border-bunker-700 px-3 py-1.5 rounded shadow-xl font-mono text-xs text-slate-300 pointer-events-none flex items-center space-x-3">
         <div>
-          <span className="text-slate-500 uppercase text-[10px] mr-1">Sector:</span>
+          <span className="text-slate-500 uppercase text-[10px] mr-1">{t.hud_sector}</span>
           <span className="text-tactical-amber font-bold">{mousePos.grid}</span>
         </div>
         <div className="border-l border-bunker-700 pl-3">
-          <span className="text-slate-500 uppercase text-[10px] mr-1">Coords:</span>
+          <span className="text-slate-500 uppercase text-[10px] mr-1">{t.hud_coords}</span>
           <span className="text-white font-bold">{mousePos.lat}m N, {mousePos.lng}m E</span>
         </div>
       </div>
-
     </div>
   );
 }

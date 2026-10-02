@@ -1,22 +1,15 @@
 import React from 'react';
 import { 
-  Ruler, PenTool, Flag, Shield, Radio, Package, 
-  Trash2, Download, Upload, Copy, Check, Crosshair 
+  Ruler, PenTool, Trash2, Download, Upload, Copy, Check 
 } from 'lucide-react';
+import { 
+  HLLGarrisonIcon, HLLOutpostIcon, HLLSuppliesIcon, 
+  HLLEnemyInfantryIcon, HLLEnemyArmorIcon 
+} from './HLLIcons';
 import { sound } from '../utils/audio';
 
-export const MARKER_TYPES = [
-  { id: 'friendly_garrison', label: 'Friendly Garrison', icon: Shield, color: 'bg-emerald-600 text-white', radius: 200 },
-  { id: 'friendly_op', label: 'Friendly Outpost (OP)', icon: Radio, color: 'bg-emerald-500 text-white', radius: 50 },
-  { id: 'supply_50', label: 'Supplies (50)', icon: Package, color: 'bg-blue-600 text-white', radius: 50 },
-  { id: 'supply_100', label: 'Supplies (100)', icon: Package, color: 'bg-amber-600 text-white', radius: 50 },
-  { id: 'enemy_inf', label: 'Enemy Infantry', icon: Crosshair, color: 'bg-red-600 text-white' },
-  { id: 'enemy_tank', label: 'Enemy Tank', icon: Flag, color: 'bg-red-700 text-white' },
-  { id: 'enemy_garrison', label: 'Enemy Garrison', icon: Shield, color: 'bg-red-800 text-white', radius: 200 }
-];
-
 export default function MapTools({
-  activeTool, // 'select' | 'ruler' | 'draw' | 'marker'
+  activeTool,
   setActiveTool,
   selectedMarkerType,
   setSelectedMarkerType,
@@ -25,12 +18,23 @@ export default function MapTools({
   onClearMarkers,
   onClearDrawings,
   onExportPlan,
-  onImportPlan
+  onImportPlan,
+  t
 }) {
   const [copied, setCopied] = React.useState(false);
 
+  const markerOptions = [
+    { id: 'friendly_garrison', label: t.marker_garrison, renderIcon: () => <HLLGarrisonIcon size={20} /> },
+    { id: 'friendly_op', label: t.marker_op, renderIcon: () => <HLLOutpostIcon size={20} /> },
+    { id: 'supply_50', label: t.marker_supply_50, renderIcon: () => <HLLSuppliesIcon size={20} amount={50} /> },
+    { id: 'supply_100', label: t.marker_supply_100, renderIcon: () => <HLLSuppliesIcon size={20} amount={100} /> },
+    { id: 'enemy_inf', label: t.marker_enemy_inf, renderIcon: () => <HLLEnemyInfantryIcon size={20} /> },
+    { id: 'enemy_tank', label: t.marker_enemy_tank, renderIcon: () => <HLLEnemyArmorIcon size={20} /> },
+    { id: 'enemy_garrison', label: t.marker_enemy_gar, renderIcon: () => <HLLGarrisonIcon size={20} isEnemy={true} /> }
+  ];
+
   const handleCopyClipboard = () => {
-    onExportPlan(true); // copy to clipboard
+    onExportPlan(true);
     setCopied(true);
     sound.playRadioClick();
     setTimeout(() => setCopied(false), 2000);
@@ -52,7 +56,7 @@ export default function MapTools({
               : 'text-slate-300 hover:bg-bunker-800'
           }`}
         >
-          Inspect / Pan
+          {t.tool_inspect}
         </button>
 
         <button
@@ -66,7 +70,7 @@ export default function MapTools({
               : 'text-slate-300 hover:bg-bunker-800'
           }`}
         >
-          Place Marker
+          {t.tool_marker}
         </button>
 
         <button
@@ -81,7 +85,7 @@ export default function MapTools({
           }`}
         >
           <Ruler className="w-3.5 h-3.5" />
-          <span>Ruler</span>
+          <span>{t.tool_ruler}</span>
         </button>
 
         <button
@@ -96,7 +100,7 @@ export default function MapTools({
           }`}
         >
           <PenTool className="w-3.5 h-3.5" />
-          <span>Draw Plan</span>
+          <span>{t.tool_draw}</span>
         </button>
 
         <div className="h-4 w-px bg-bunker-700 mx-1" />
@@ -104,7 +108,7 @@ export default function MapTools({
         {/* Export / Import Buttons */}
         <button
           onClick={handleCopyClipboard}
-          title="Copy Battle Plan to Clipboard"
+          title="Copiar Plan de Batalla al Portapapeles"
           className="p-1.5 text-slate-400 hover:text-tactical-amber hover:bg-bunker-800 rounded transition"
         >
           {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -112,14 +116,14 @@ export default function MapTools({
 
         <button
           onClick={() => onExportPlan(false)}
-          title="Download Battle Plan JSON"
+          title="Descargar Plan de Batalla JSON"
           className="p-1.5 text-slate-400 hover:text-tactical-amber hover:bg-bunker-800 rounded transition"
         >
           <Download className="w-4 h-4" />
         </button>
 
         <label
-          title="Import Battle Plan JSON"
+          title="Cargar Plan de Batalla JSON"
           className="p-1.5 text-slate-400 hover:text-tactical-amber hover:bg-bunker-800 rounded transition cursor-pointer"
         >
           <Upload className="w-4 h-4" />
@@ -132,35 +136,32 @@ export default function MapTools({
         </label>
       </div>
 
-      {/* Sub-Bar: Marker Palette when Marker Tool is active */}
+      {/* Sub-Bar: Authentic HLL In-Game Marker Palette */}
       {activeTool === 'marker' && (
-        <div className="bg-bunker-900/95 backdrop-blur-md border border-bunker-700 p-2 rounded shadow-2xl space-y-1.5 max-w-sm">
+        <div className="bg-bunker-900/95 backdrop-blur-md border border-bunker-700 p-2.5 rounded shadow-2xl space-y-2 max-w-sm">
           <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-            Select Marker to deploy on click:
+            {t.tool_marker}: Símbolos Oficiales del Juego
           </div>
           <div className="grid grid-cols-2 gap-1.5">
-            {MARKER_TYPES.map(m => {
-              const Icon = m.icon;
-              return (
-                <button
-                  key={m.id}
-                  onClick={() => {
-                    setSelectedMarkerType(m.id);
-                    sound.playRadioClick();
-                  }}
-                  className={`flex items-center space-x-1.5 p-1.5 rounded border text-left text-[11px] transition ${
-                    selectedMarkerType === m.id
-                      ? 'border-tactical-amber bg-tactical-amber/20 text-white font-bold'
-                      : 'border-bunker-700 bg-bunker-950 text-slate-300 hover:border-slate-500'
-                  }`}
-                >
-                  <span className={`p-1 rounded ${m.color}`}>
-                    <Icon className="w-3 h-3" />
-                  </span>
-                  <span className="truncate">{m.label}</span>
-                </button>
-              );
-            })}
+            {markerOptions.map(m => (
+              <button
+                key={m.id}
+                onClick={() => {
+                  setSelectedMarkerType(m.id);
+                  sound.playRadioClick();
+                }}
+                className={`flex items-center space-x-2 p-1.5 rounded border text-left text-[11px] transition ${
+                  selectedMarkerType === m.id
+                    ? 'border-tactical-amber bg-tactical-amber/20 text-white font-bold'
+                    : 'border-bunker-700 bg-bunker-950 text-slate-300 hover:border-slate-500'
+                }`}
+              >
+                <span className="shrink-0">
+                  {m.renderIcon()}
+                </span>
+                <span className="truncate">{m.label}</span>
+              </button>
+            ))}
           </div>
 
           <div className="pt-1 flex justify-between border-t border-bunker-800">
@@ -169,7 +170,7 @@ export default function MapTools({
               className="text-[10px] text-red-400 hover:text-red-300 flex items-center space-x-1"
             >
               <Trash2 className="w-3 h-3" />
-              <span>Clear Placed Markers</span>
+              <span>{t.clear_markers}</span>
             </button>
           </div>
         </div>
@@ -197,7 +198,7 @@ export default function MapTools({
             className="text-[10px] text-red-400 hover:text-red-300 flex items-center space-x-1"
           >
             <Trash2 className="w-3 h-3" />
-            <span>Clear Drawing</span>
+            <span>{t.clear_drawings}</span>
           </button>
         </div>
       )}
@@ -205,7 +206,7 @@ export default function MapTools({
       {/* Sub-Bar: Ruler Instructions */}
       {activeTool === 'ruler' && (
         <div className="bg-bunker-900/95 backdrop-blur-md border border-bunker-700 p-2 rounded shadow-2xl text-[11px] text-tactical-amber">
-          Click first point, then click target point to measure exact distance and sprint time.
+          {t.ruler_hint}
         </div>
       )}
 
