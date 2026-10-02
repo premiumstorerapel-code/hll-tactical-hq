@@ -21,6 +21,10 @@ export default function MapViewer({
   onAddDrawing,
   activeDefenseSector,
   activeAttackSector,
+  selectedBase,
+  strategy,
+  operationMode = 'attack',
+  layerFilters = { garrisons: true, mgs: true, snipers: true, tanks: true, mines: true },
   t
 }) {
   const mapContainerRef = useRef(null);
@@ -32,7 +36,8 @@ export default function MapViewer({
     grid: null,
     artyLine: null,
     ruler: null,
-    drawings: null
+    drawings: null,
+    strategy: null
   });
 
   const [mousePos, setMousePos] = useState({ lat: 1000, lng: 1000, grid: 'E5 kp5' });
@@ -63,14 +68,13 @@ export default function MapViewer({
       maxBoundsViscosity: 0.8
     });
 
-    // Image overlay
     L.imageOverlay(mapConfig.image, bounds).addTo(map);
     map.fitBounds(bounds);
 
-    // Layer groups
     layersRef.current.grid = L.layerGroup().addTo(map);
     layersRef.current.pois = L.layerGroup().addTo(map);
     layersRef.current.circles = L.layerGroup().addTo(map);
+    layersRef.current.strategy = L.layerGroup().addTo(map);
     layersRef.current.markers = L.layerGroup().addTo(map);
     layersRef.current.artyLine = L.layerGroup().addTo(map);
     layersRef.current.ruler = L.layerGroup().addTo(map);
@@ -266,7 +270,7 @@ export default function MapViewer({
     });
   }, [drawings]);
 
-  // Render Strongpoints and Terrain POIs
+  // Render Strongpoints and Base Overlays
   useEffect(() => {
     const poisLayer = layersRef.current.pois;
     if (!poisLayer) return;
@@ -277,33 +281,43 @@ export default function MapViewer({
     pois.forEach(poi => {
       const isStrongpoint = poi.type === 'strongpoint';
       const isArty = poi.type === 'artillery';
-      const isDefending = activeDefenseSector?.id === poi.id;
-      const isAttacking = activeAttackSector?.id === poi.id;
+      const isSelected = selectedBase?.id === poi.id;
 
       if (isStrongpoint) {
         L.circle(poi.coordinates, {
           radius: 50,
-          color: isDefending ? '#3b82f6' : isAttacking ? '#ef4444' : '#f59e0b',
-          weight: isDefending || isAttacking ? 2.5 : 1.5,
-          fillColor: isDefending ? '#3b82f6' : isAttacking ? '#ef4444' : '#f59e0b',
-          fillOpacity: 0.15,
-          dashArray: '4, 4'
+          color: isSelected ? '#f59e0b' : '#3b82f6',
+          weight: isSelected ? 3 : 1.5,
+          fillColor: isSelected ? '#f59e0b' : '#3b82f6',
+          fillOpacity: isSelected ? 0.25 : 0.12,
+          dashArray: isSelected ? '0' : '4, 4'
         }).addTo(poisLayer);
+
+        if (isSelected) {
+          L.circle(poi.coordinates, {
+            radius: 200,
+            color: '#f59e0b',
+            weight: 1,
+            dashArray: '2, 6',
+            fillColor: '#f59e0b',
+            fillOpacity: 0.04
+          }).addTo(poisLayer);
+        }
 
         const badgeColor = poi.team === 'ger' ? '#ef4444' : poi.team === 'us' ? '#3b82f6' : '#eab308';
         const iconHtml = `
-          <div style="background: ${isDefending ? '#1e3a8a' : isAttacking ? '#7f1d1d' : '#11171b'}; 
-                      border: 2px solid ${isDefending ? '#60a5fa' : isAttacking ? '#f87171' : badgeColor}; 
-                      padding: 2px 6px; border-radius: 3px; font-family: 'Chakra Petch', sans-serif; 
-                      font-size: 10px; font-weight: bold; color: #fff; white-space: nowrap; 
-                      box-shadow: 0 0 10px rgba(0,0,0,0.8); cursor: pointer; text-align: center;">
-            ${isDefending ? '🛡️ [DEF] ' : isAttacking ? '⚔️ [ATK] ' : ''}${poi.name}
+          <div style="background: ${isSelected ? '#b45309' : '#11171b'}; 
+                      border: 2px solid ${isSelected ? '#fbbf24' : badgeColor}; 
+                      padding: 2px 7px; border-radius: 4px; font-family: 'Chakra Petch', sans-serif; 
+                      font-size: 11px; font-weight: bold; color: #fff; white-space: nowrap; 
+                      box-shadow: 0 0 12px rgba(0,0,0,0.9); cursor: pointer; text-align: center;">
+            ${isSelected ? '⭐ [OBJETIVO ACTIVO] ' : '🚩 '}${poi.name}
           </div>
         `;
         const icon = L.divIcon({
           className: 'strongpoint-label',
           html: iconHtml,
-          iconAnchor: [40, 12]
+          iconAnchor: [45, 12]
         });
 
         const marker = L.marker(poi.coordinates, { icon }).addTo(poisLayer);
@@ -350,9 +364,136 @@ export default function MapViewer({
         });
       }
     });
-  }, [mapConfig, activeDefenseSector, activeAttackSector]);
+  }, [mapConfig, selectedBase]);
 
-  // Render Placed Markers using Authentic In-Game HLL SVGs
+  // RENDER STRATEGIC INTEL HOTSPOTS (Garrisons, MGs, Snipers, Tanks, AT Mines)
+  useEffect(() => {
+    const stratLayer = layersRef.current.strategy;
+    if (!stratLayer) return;
+    stratLayer.clearLayers();
+
+    if (!strategy) return;
+    const plan = operationMode === 'attack' ? strategy.attack : strategy.defense;
+    if (!plan) return;
+
+    const toRad = (d) => (d * Math.PI) / 180;
+
+    // 1. Recommended Garrisons (with 200m exclusionary circles)
+    if (layerFilters.garrisons && plan.garrisons) {
+      plan.garrisons.forEach((g, idx) => {
+        L.circle(g.coordinates, {
+          radius: 200,
+          color: '#10b981',
+          weight: 1.5,
+          dashArray: '5, 5',
+          fillColor: '#10b981',
+          fillOpacity: 0.08
+        }).addTo(stratLayer);
+
+        const html = `
+          <div style="background: #042419; border: 2px solid #34d399; padding: 3px 6px; border-radius: 4px; 
+                      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: bold; color: #fff; 
+                      box-shadow: 0 0 14px rgba(16,185,129,0.7); white-space: nowrap; display: flex; align-items: center; gap: 4px;">
+            <span>🛡️</span>
+            <span>${g.name}</span>
+          </div>
+        `;
+        const icon = L.divIcon({ className: 'strat-garry', html, iconAnchor: [30, 14] });
+        const m = L.marker(g.coordinates, { icon }).addTo(stratLayer);
+        m.bindPopup(`<strong>${g.name}</strong><br/>${g.description}`);
+      });
+    }
+
+    // 2. Machine Gun Nests with Firing Arc Cones
+    if (layerFilters.mgs && plan.mgSpots) {
+      plan.mgSpots.forEach((mg, idx) => {
+        // Draw 140m firing sector cone polygon
+        const center = mg.coordinates;
+        const length = 140;
+        const startAngle = mg.coneAngle - (mg.coneSpread / 2);
+        const endAngle = mg.coneAngle + (mg.coneSpread / 2);
+
+        const conePoints = [center];
+        const step = 5;
+        for (let a = startAngle; a <= endAngle; a += step) {
+          const lat = center[0] + length * Math.cos(toRad(a));
+          const lng = center[1] + length * Math.sin(toRad(a));
+          conePoints.push([lat, lng]);
+        }
+        conePoints.push(center);
+
+        L.polygon(conePoints, {
+          color: '#f59e0b',
+          weight: 1,
+          fillColor: '#f59e0b',
+          fillOpacity: 0.18,
+          dashArray: '3, 3'
+        }).addTo(stratLayer);
+
+        const html = `
+          <div style="background: #3b2308; border: 2px solid #f59e0b; padding: 2px 6px; border-radius: 4px; 
+                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
+                      box-shadow: 0 0 12px rgba(245,158,11,0.6); white-space: nowrap;">
+            💥 ${mg.name}
+          </div>
+        `;
+        const icon = L.divIcon({ className: 'strat-mg', html, iconAnchor: [20, 10] });
+        const m = L.marker(mg.coordinates, { icon }).addTo(stratLayer);
+        m.bindPopup(`<strong>${mg.name}</strong><br/>${mg.description}`);
+      });
+    }
+
+    // 3. Sniper Vantage Towers
+    if (layerFilters.snipers && plan.sniperSpots) {
+      plan.sniperSpots.forEach((sn, idx) => {
+        const html = `
+          <div style="background: #082138; border: 2px solid #38bdf8; padding: 2px 6px; border-radius: 4px; 
+                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
+                      box-shadow: 0 0 12px rgba(56,189,248,0.7); white-space: nowrap;">
+            🎯 ${sn.name}
+          </div>
+        `;
+        const icon = L.divIcon({ className: 'strat-sniper', html, iconAnchor: [20, 10] });
+        const m = L.marker(sn.coordinates, { icon }).addTo(stratLayer);
+        m.bindPopup(`<strong>${sn.name}</strong><br/>${sn.description}`);
+      });
+    }
+
+    // 4. Tanks Hull-Down Positions
+    if (layerFilters.tanks && plan.tankSpots) {
+      plan.tankSpots.forEach((tk, idx) => {
+        const html = `
+          <div style="background: #0f2c42; border: 2px solid #60a5fa; padding: 2px 6px; border-radius: 4px; 
+                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
+                      box-shadow: 0 0 12px rgba(96,165,250,0.6); white-space: nowrap;">
+            🚜 ${tk.name}
+          </div>
+        `;
+        const icon = L.divIcon({ className: 'strat-tank', html, iconAnchor: [20, 10] });
+        const m = L.marker(tk.coordinates, { icon }).addTo(stratLayer);
+        m.bindPopup(`<strong>${tk.name}</strong><br/>${tk.description}`);
+      });
+    }
+
+    // 5. AT Mine Bottlenecks
+    if (layerFilters.mines && plan.atMines) {
+      plan.atMines.forEach((mine, idx) => {
+        const html = `
+          <div style="background: #3b0909; border: 2px solid #ef4444; padding: 2px 6px; border-radius: 4px; 
+                      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: bold; color: #fff; 
+                      box-shadow: 0 0 12px rgba(239,68,68,0.7); white-space: nowrap;">
+            🛑 ${mine.name}
+          </div>
+        `;
+        const icon = L.divIcon({ className: 'strat-mine', html, iconAnchor: [20, 10] });
+        const m = L.marker(mine.coordinates, { icon }).addTo(stratLayer);
+        m.bindPopup(`<strong>${mine.name}</strong><br/>${mine.description}`);
+      });
+    }
+
+  }, [strategy, operationMode, layerFilters]);
+
+  // Render Placed Markers
   useEffect(() => {
     const markersLayer = layersRef.current.markers;
     const circlesLayer = layersRef.current.circles;
@@ -380,7 +521,6 @@ export default function MapViewer({
         }
       }
 
-      // Draw Exclusion circle for Garrisons (200m)
       if (isFriendlyGar) {
         L.circle(m.coordinates, {
           radius: 200,
@@ -392,7 +532,6 @@ export default function MapViewer({
           interactive: false
         }).addTo(circlesLayer);
       } else if (isFriendlyOp) {
-        // Draw 50m OP safe radius
         L.circle(m.coordinates, {
           radius: 50,
           color: '#34d399',
@@ -404,7 +543,6 @@ export default function MapViewer({
         }).addTo(circlesLayer);
       }
 
-      // Authentic HLL In-Game Symbol Badge
       const iconHtml = getHLLMarkerHTML(m.type, m.name, hasProximityViolation);
       const icon = L.divIcon({
         className: 'user-placed-marker',

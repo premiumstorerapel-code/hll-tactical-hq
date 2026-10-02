@@ -4,21 +4,21 @@ import smeData from './data/maps/sme.json';
 import foyData from './data/maps/foy.json';
 
 import MapViewer from './components/MapViewer';
+import StrategicPlaybookPanel from './components/StrategicPlaybookPanel';
 import TacticalAdvisor from './components/TacticalAdvisor';
-import CommanderHUD from './components/CommanderHUD';
-import OfficerHUD from './components/OfficerHUD';
 import TankCrewHUD from './components/TankCrewHUD';
 import ArtilleryWidget from './components/ArtilleryWidget';
 import MapTools from './components/MapTools';
 import POIModal from './components/POIModal';
 
 import { 
-  Shield, Radio, Truck, Volume2, VolumeX, 
-  Map, Monitor, ChevronLeft, ChevronRight, Languages 
+  Shield, Crosshair, Target, Volume2, VolumeX, 
+  Map, Monitor, ChevronLeft, ChevronRight, Languages, BookOpen 
 } from 'lucide-react';
 import { sound } from './utils/audio';
 import { translations } from './utils/i18n';
 import { validateGarrisonPlacement } from './engine/geometry';
+import { getSectorStrategy } from './engine/sectorStrategy';
 
 const AVAILABLE_MAPS = {
   carentan: carentanData,
@@ -27,12 +27,12 @@ const AVAILABLE_MAPS = {
 };
 
 export default function App() {
-  const [lang, setLang] = useState('es'); // Default to Spanish!
+  const [lang, setLang] = useState('es');
   const [selectedMapKey, setSelectedMapKey] = useState('carentan');
-  const [activeRole, setActiveRole] = useState('commander'); // 'commander' | 'officer' | 'tank'
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [crtEnabled, setCrtEnabled] = useState(false);
   const [advisorCollapsed, setAdvisorCollapsed] = useState(false);
+  const [activeTabMode, setActiveTabMode] = useState('strategy'); // 'strategy' | 'advisor' | 'tank'
 
   const t = translations[lang] || translations.es;
 
@@ -41,14 +41,19 @@ export default function App() {
   const strongpoints = mapConfig.points.filter(p => p.type === 'strongpoint');
   const batteries = mapConfig.points.filter(p => p.type === 'artillery');
 
-  // Objectives for Tactical Advisor
-  const [activeDefenseSector, setActiveDefenseSector] = useState(null);
-  const [activeAttackSector, setActiveAttackSector] = useState(null);
+  // Selected Base for Strategic Intel
+  const [selectedBase, setSelectedBase] = useState(null);
+  const [operationMode, setOperationMode] = useState('attack'); // 'attack' | 'defense'
+  const [layerFilters, setLayerFilters] = useState({
+    garrisons: true,
+    mgs: true,
+    snipers: true,
+    tanks: true,
+    mines: true
+  });
 
-  // Interactive Markers State (Garrisons, OPs, Supplies, Enemy)
+  // Interactive Markers State (User placed or deployed from strategy)
   const [markers, setMarkers] = useState([]);
-  
-  // Tactical Drawings (Battle Plan Polylines)
   const [drawings, setDrawings] = useState([]);
 
   // Active Tool ('select' | 'ruler' | 'draw' | 'marker')
@@ -64,44 +69,112 @@ export default function App() {
   // Selected POI for Modal Directives
   const [selectedPOI, setSelectedPOI] = useState(null);
 
-  // Initialize default objectives & battery when map changes
+  // Initialize default base and battery when map changes
   useEffect(() => {
     if (strongpoints.length > 0) {
-      setActiveDefenseSector(strongpoints[0]);
-      setActiveAttackSector(strongpoints[Math.min(2, strongpoints.length - 1)]);
+      // Pick center strongpoint (e.g. Town Center in Carentan)
+      const centerSp = strongpoints.find(s => s.id.includes('b7') || s.name.toLowerCase().includes('town') || s.name.toLowerCase().includes('sainte') || s.name.toLowerCase().includes('foy')) || strongpoints[0];
+      setSelectedBase(centerSp);
     }
     if (batteries.length > 0) {
       setActiveBattery(batteries[0]);
     }
 
-    const centerPoint = strongpoints[0]?.coordinates || [1000, 1000];
-    const initialGarrisons = [
-      {
-        id: `def_gar_${Date.now()}_1`,
-        name: lang === 'es' ? 'Guarnición Defensiva #1' : 'Defense Garrison #1',
-        type: 'friendly_garrison',
-        coordinates: [centerPoint[0] - 80, centerPoint[1] + 60],
-        team: 'us'
-      }
-    ];
-    setMarkers(initialGarrisons);
+    setMarkers([]);
     setDrawings([]);
     setActiveArtyTarget(null);
   }, [selectedMapKey]);
 
-  // Add marker from user click
+  // Compute active base strategy
+  const currentStrategy = selectedBase
+    ? getSectorStrategy(selectedMapKey, selectedBase.id, selectedBase.name, selectedBase.coordinates)
+    : null;
+
+  // Deploy all strategic positions directly into active map markers
+  const handleDeployStrategyToMap = (plan) => {
+    if (!plan) return;
+    sound.playAbilitySound();
+
+    const deployedMarkers = [];
+
+    // Add Garrisons
+    if (plan.garrisons) {
+      plan.garrisons.forEach((g, i) => {
+        deployedMarkers.push({
+          id: `dep_gar_${Date.now()}_${i}`,
+          name: g.name,
+          type: 'friendly_garrison',
+          coordinates: g.coordinates,
+          team: 'us'
+        });
+      });
+    }
+
+    // Add MG Nests
+    if (plan.mgSpots) {
+      plan.mgSpots.forEach((mg, i) => {
+        deployedMarkers.push({
+          id: `dep_mg_${Date.now()}_${i}`,
+          name: mg.name,
+          type: 'friendly_op',
+          coordinates: mg.coordinates,
+          team: 'us'
+        });
+      });
+    }
+
+    // Add Snipers
+    if (plan.sniperSpots) {
+      plan.sniperSpots.forEach((sn, i) => {
+        deployedMarkers.push({
+          id: `dep_sn_${Date.now()}_${i}`,
+          name: sn.name,
+          type: 'recon_unit',
+          coordinates: sn.coordinates,
+          team: 'us'
+        });
+      });
+    }
+
+    // Add Tanks
+    if (plan.tankSpots) {
+      plan.tankSpots.forEach((tk, i) => {
+        deployedMarkers.push({
+          id: `dep_tk_${Date.now()}_${i}`,
+          name: tk.name,
+          type: 'friendly_tank',
+          coordinates: tk.coordinates,
+          team: 'us'
+        });
+      });
+    }
+
+    // Add AT Mines
+    if (plan.atMines) {
+      plan.atMines.forEach((m, i) => {
+        deployedMarkers.push({
+          id: `dep_mine_${Date.now()}_${i}`,
+          name: m.name,
+          type: 'supply_50',
+          coordinates: m.coordinates,
+          team: 'us'
+        });
+      });
+    }
+
+    setMarkers(prev => [...prev, ...deployedMarkers]);
+  };
+
   const handleAddMarker = (coords, type) => {
     const isGarrison = type === 'friendly_garrison';
     const currentGarrisons = markers.filter(m => m.type === 'friendly_garrison');
 
-    // Garrison Cap Rule Check (8 max)
     if (isGarrison && currentGarrisons.length >= 8) {
       sound.playAlertBeep();
-      alert(lang === 'es' ? '¡LÍMITE DE GUARNICIONES ALCANZADO (8/8)! Desmonta una guarnición redundante antes de construir una nueva.' : 'GARRISON CAP REACHED (8/8)! Dismantle a redundant garrison before building a new one.');
+      alert(lang === 'es' ? '¡LÍMITE DE GUARNICIONES ALCANZADO (8/8)!' : 'GARRISON CAP REACHED (8/8)!');
       return;
     }
 
-    // 200m Proximity Rule Check
     if (isGarrison) {
       const check = validateGarrisonPlacement(coords, currentGarrisons);
       if (!check.isValid) {
@@ -109,9 +182,11 @@ export default function App() {
       }
     }
 
-    const typeNamesEs = {
+    const typeNames = {
       friendly_garrison: `Guarnición #${currentGarrisons.length + 1}`,
-      friendly_op: `Puesto Avanzado (OP)`,
+      friendly_op: `Nido / Puesto (OP)`,
+      friendly_tank: `Tanque Aliado`,
+      recon_unit: `Puesto Recon`,
       supply_50: `Suministros (50)`,
       supply_100: `Suministros (100)`,
       enemy_inf: `Infantería Enemiga`,
@@ -119,21 +194,9 @@ export default function App() {
       enemy_garrison: `Guarnición Enemiga`
     };
 
-    const typeNamesEn = {
-      friendly_garrison: `Garrison #${currentGarrisons.length + 1}`,
-      friendly_op: `Squad OP`,
-      supply_50: `Supplies (50)`,
-      supply_100: `Supplies (100)`,
-      enemy_inf: `Enemy Infantry`,
-      enemy_tank: `Enemy Armor`,
-      enemy_garrison: `Enemy Garrison`
-    };
-
-    const typeNames = lang === 'es' ? typeNamesEs : typeNamesEn;
-
     const newMarker = {
       id: `marker_${Date.now()}`,
-      name: typeNames[type] || 'Marker',
+      name: typeNames[type] || 'Marcador',
       type,
       coordinates: coords,
       team: type.startsWith('enemy') ? 'ger' : 'us'
@@ -146,49 +209,9 @@ export default function App() {
     setMarkers(prev => prev.filter(m => m.id !== id));
   };
 
-  const handleAcceptSuggestedGarrison = (sug) => {
-    const currentGarrisons = markers.filter(m => m.type === 'friendly_garrison');
-    if (currentGarrisons.length >= 8) {
-      sound.playAlertBeep();
-      alert(lang === 'es' ? '¡LÍMITE DE GUARNICIONES ALCANZADO (8/8)!' : 'GARRISON CAP REACHED (8/8)!');
-      return;
-    }
-
-    const newGarrison = {
-      id: `gar_${Date.now()}`,
-      name: sug.name,
-      type: 'friendly_garrison',
-      coordinates: sug.coordinates,
-      team: 'us'
-    };
-
-    setMarkers(prev => [...prev, newGarrison]);
-    sound.playAbilitySound();
-  };
-
-  const handleCommanderAbility = (ability) => {
-    if (ability.id === 'supply_drop') {
-      if (activeDefenseSector) {
-        const supplyCoords = [
-          activeDefenseSector.coordinates[0] + 40,
-          activeDefenseSector.coordinates[1] - 30
-        ];
-        handleAddMarker(supplyCoords, 'supply_100');
-      }
-    } else if (ability.id === 'airhead') {
-      if (activeAttackSector) {
-        const airheadCoords = [
-          activeAttackSector.coordinates[0] - 220,
-          activeAttackSector.coordinates[1] + 150
-        ];
-        handleAddMarker(airheadCoords, 'friendly_op');
-      }
-    }
-  };
-
   const handleMapClickTarget = (coords) => {
     setActiveArtyTarget({
-      name: `${lang === 'es' ? 'Blanco' : 'Target'} [${coords[0]}m N, ${coords[1]}m E]`,
+      name: `Blanco [${coords[0]}m N, ${coords[1]}m E]`,
       coordinates: coords
     });
   };
@@ -204,10 +227,10 @@ export default function App() {
 
   const handleExportPlan = (toClipboard = false) => {
     const plan = {
-      version: "1.0",
+      version: "2.0",
       map: selectedMapKey,
-      defenseSector: activeDefenseSector?.name,
-      attackSector: activeAttackSector?.name,
+      selectedBase: selectedBase?.name,
+      operationMode,
       markers,
       drawings
     };
@@ -221,7 +244,7 @@ export default function App() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `hll_battleplan_${selectedMapKey}_${Date.now()}.json`;
+      a.download = `hll_plan_estrategico_${selectedMapKey}_${Date.now()}.json`;
       a.click();
     }
   };
@@ -241,7 +264,7 @@ export default function App() {
         }
         sound.playAbilitySound();
       } catch (err) {
-        alert(lang === 'es' ? 'Archivo JSON de plan de batalla no válido' : 'Invalid battle plan JSON file');
+        alert('Archivo JSON no válido');
       }
     };
     reader.readAsText(file);
@@ -253,12 +276,10 @@ export default function App() {
     sound.playRadioClick();
   };
 
-  const friendlyGarrisonsCount = markers.filter(m => m.type === 'friendly_garrison').length;
-
   return (
     <div className={`flex flex-col h-screen w-screen overflow-hidden bg-bunker-950 text-slate-100 select-none ${crtEnabled ? 'crt-overlay' : ''}`}>
       
-      {/* TOP HEADER: WWII Command Bunker HUD Bar */}
+      {/* TOP HEADER: Command Bunker Bar */}
       <header className="h-14 bg-bunker-900 border-b border-bunker-700 px-3 sm:px-4 flex items-center justify-between z-30 shadow-lg shrink-0 gap-2">
         
         {/* Left: Branding & Map Selector */}
@@ -266,7 +287,7 @@ export default function App() {
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-tactical-amber animate-ping shrink-0" />
             <h1 className="font-display font-black text-sm sm:text-base lg:text-lg tracking-wider text-white whitespace-nowrap">
-              {t.app_title} <span className="text-tactical-amber font-normal hidden sm:inline">{t.app_subtitle}</span>
+              HELL LET LOOSE <span className="text-tactical-amber font-normal hidden sm:inline">CENTRO ESTRATÉGICO</span>
             </h1>
           </div>
 
@@ -283,74 +304,71 @@ export default function App() {
               }}
               className="bg-transparent text-xs font-mono font-bold text-slate-200 focus:outline-none cursor-pointer"
             >
-              <option value="carentan" className="bg-bunker-900">{t.map_carentan}</option>
-              <option value="sme" className="bg-bunker-900">{t.map_sme}</option>
-              <option value="foy" className="bg-bunker-900">{t.map_foy}</option>
+              <option value="carentan" className="bg-bunker-900">CARENTAN (2016m)</option>
+              <option value="sme" className="bg-bunker-900">SAINTE-MÈRE-ÉGLISE (1984m)</option>
+              <option value="foy" className="bg-bunker-900">FOY (INVIERNO 1984m)</option>
             </select>
           </div>
         </div>
 
-        {/* Center: Role Toggle Engine */}
+        {/* Center: Tactical Intel Navigation Tabs */}
         <div className="flex items-center bg-bunker-950 p-1 rounded-md border border-bunker-800">
           <button
             onClick={() => {
-              setActiveRole('commander');
+              setActiveTabMode('strategy');
               sound.playRadioClick();
             }}
             className={`px-3 py-1 text-xs font-display font-bold tracking-wider rounded transition flex items-center space-x-1.5 ${
-              activeRole === 'commander'
-                ? 'bg-tactical-amber text-black shadow'
+              activeTabMode === 'strategy'
+                ? 'bg-tactical-amber text-black shadow font-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>GUÍA DE ATAQUE Y DEFENSA</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTabMode('tank');
+              sound.playRadioClick();
+            }}
+            className={`px-3 py-1 text-xs font-display font-bold tracking-wider rounded transition flex items-center space-x-1.5 ${
+              activeTabMode === 'tank'
+                ? 'bg-tactical-amber text-black shadow font-black'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
-            <span>{t.role_commander}</span>
+            <span>BLINDAJE Y TANQUES</span>
           </button>
 
           <button
             onClick={() => {
-              setActiveRole('officer');
+              setActiveTabMode('advisor');
               sound.playRadioClick();
             }}
             className={`px-3 py-1 text-xs font-display font-bold tracking-wider rounded transition flex items-center space-x-1.5 ${
-              activeRole === 'officer'
-                ? 'bg-tactical-amber text-black shadow'
+              activeTabMode === 'advisor'
+                ? 'bg-tactical-amber text-black shadow font-black'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Radio className="w-3.5 h-3.5" />
-            <span>{t.role_officer}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveRole('tank');
-              sound.playRadioClick();
-            }}
-            className={`px-3 py-1 text-xs font-display font-bold tracking-wider rounded transition flex items-center space-x-1.5 ${
-              activeRole === 'tank'
-                ? 'bg-tactical-amber text-black shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Truck className="w-3.5 h-3.5" />
-            <span>{t.role_tank}</span>
+            <Target className="w-3.5 h-3.5" />
+            <span>RADAR Y 200M</span>
           </button>
         </div>
 
-        {/* Right: Language toggle, Audio, CRT, Advisor Toggle */}
+        {/* Right: Language toggle, Audio, CRT, Panel Toggle */}
         <div className="flex items-center space-x-2">
-          {/* Language Toggle (ES / EN) */}
           <button
             onClick={toggleLanguage}
-            title={lang === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish'}
             className="px-2 py-1 rounded border border-tactical-amber/80 bg-tactical-amber/15 text-tactical-amber hover:bg-tactical-amber hover:text-black font-display font-bold text-xs uppercase tracking-wider transition flex items-center space-x-1"
           >
             <Languages className="w-3.5 h-3.5" />
             <span>{lang.toUpperCase()}</span>
           </button>
 
-          {/* CRT effect toggle */}
           <button
             onClick={() => setCrtEnabled(!crtEnabled)}
             title="Efecto CRT Bunker"
@@ -361,10 +379,9 @@ export default function App() {
             }`}
           >
             <Monitor className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{t.crt_btn}</span>
+            <span className="hidden sm:inline">CRT</span>
           </button>
 
-          {/* Audio toggle */}
           <button
             onClick={() => {
               const muted = sound.toggleMute();
@@ -376,44 +393,25 @@ export default function App() {
             {isAudioMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-tactical-amber" />}
           </button>
 
-          {/* Toggle Advisor sidebar */}
           <button
             onClick={() => setAdvisorCollapsed(!advisorCollapsed)}
             className="px-2.5 py-1 rounded bg-bunker-800 hover:bg-bunker-700 text-slate-200 text-xs font-mono border border-bunker-700 transition flex items-center space-x-1"
           >
-            <span>{t.advisor_btn}</span>
+            <span>PANEL</span>
             {advisorCollapsed ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
           </button>
         </div>
 
       </header>
 
-      {/* ROLE-SPECIFIC HUD BAR */}
-      <div className="shrink-0 z-20">
-        {activeRole === 'commander' && (
-          <CommanderHUD
-            garrisonsCount={friendlyGarrisonsCount}
-            onActivateAbility={handleCommanderAbility}
-            t={t}
-          />
-        )}
-        {activeRole === 'officer' && (
-          <OfficerHUD
-            activeOp={markers.find(m => m.type === 'friendly_op')}
-            onPlaceOpRequest={() => {
-              setActiveTool('marker');
-              setSelectedMarkerType('friendly_op');
-            }}
-            selectedSupplyZone="blue"
-            t={t}
-          />
-        )}
-        {activeRole === 'tank' && (
+      {/* TANK CREW HUD (When Tank Mode is active) */}
+      {activeTabMode === 'tank' && (
+        <div className="shrink-0 z-20">
           <TankCrewHUD t={t} />
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* MAIN WORKSPACE: Map + Floating Artillery Widget + Tactical Advisor Sidebar */}
+      {/* MAIN WORKSPACE: Map + Strategic Panel Sidebar */}
       <div className="flex-1 relative flex overflow-hidden">
         
         {/* Leaflet Map Surface */}
@@ -427,13 +425,18 @@ export default function App() {
             selectedMarkerType={selectedMarkerType}
             activeTarget={activeArtyTarget}
             activeBattery={activeBattery}
-            onSelectPOI={poi => setSelectedPOI(poi)}
+            onSelectPOI={poi => {
+              setSelectedBase(poi);
+              setSelectedPOI(poi);
+            }}
             onMapClickTarget={handleMapClickTarget}
             drawColor={drawColor}
             drawings={drawings}
             onAddDrawing={d => setDrawings(prev => [...prev, d])}
-            activeDefenseSector={activeDefenseSector}
-            activeAttackSector={activeAttackSector}
+            selectedBase={selectedBase}
+            strategy={currentStrategy}
+            operationMode={operationMode}
+            layerFilters={layerFilters}
             t={t}
           />
 
@@ -467,24 +470,60 @@ export default function App() {
           </div>
         </div>
 
-        {/* Real-Time Deterministic Tactical Advisor Sidebar */}
+        {/* SIDEBAR: Strategic Playbook Panel or Tactical Advisor */}
         <aside className={`${advisorCollapsed ? 'w-0' : 'w-80 sm:w-96'} transition-all duration-200 shrink-0 h-full overflow-hidden z-20 shadow-2xl`}>
-          <TacticalAdvisor
-            activeDefenseSector={activeDefenseSector}
-            activeAttackSector={activeAttackSector}
-            onSelectDefenseSector={sp => setActiveDefenseSector(sp)}
-            onSelectAttackSector={sp => setActiveAttackSector(sp)}
-            strongpoints={strongpoints}
-            markers={markers}
-            onAcceptSuggestedGarrison={handleAcceptSuggestedGarrison}
-            mapConfig={mapConfig}
-            t={t}
-          />
+          {activeTabMode === 'strategy' && (
+            <div className="h-full overflow-y-auto">
+              <StrategicPlaybookPanel
+                selectedBase={selectedBase}
+                operationMode={operationMode}
+                setOperationMode={setOperationMode}
+                strategy={currentStrategy}
+                layerFilters={layerFilters}
+                setLayerFilters={setLayerFilters}
+                onDeployStrategyToMap={handleDeployStrategyToMap}
+                strongpoints={strongpoints}
+                onSelectBase={sp => setSelectedBase(sp)}
+                t={t}
+              />
+            </div>
+          )}
+
+          {activeTabMode === 'advisor' && (
+            <TacticalAdvisor
+              activeDefenseSector={selectedBase}
+              activeAttackSector={strongpoints[Math.min(2, strongpoints.length - 1)]}
+              onSelectDefenseSector={sp => setSelectedBase(sp)}
+              onSelectAttackSector={() => {}}
+              strongpoints={strongpoints}
+              markers={markers}
+              onAcceptSuggestedGarrison={sug => handleAddMarker(sug.coordinates, 'friendly_garrison')}
+              mapConfig={mapConfig}
+              t={t}
+            />
+          )}
+
+          {activeTabMode === 'tank' && (
+            <div className="p-4 bg-bunker-900 h-full text-slate-300 font-mono text-xs space-y-3">
+              <div className="font-display font-bold text-white uppercase text-sm border-b border-bunker-700 pb-2">
+                DOCTRINA DE COMBATE BLINDADO
+              </div>
+              <p className="text-xs leading-relaxed">
+                • <strong>Regla del Diamante (30°):</strong> Nunca encares al cañón enemigo de forma perpendicular (0°). Angular a 30° incrementa el grosor efectivo de tu placa frontal de 100mm a más de 115mm y duplica las probabilidades de rebote.
+              </p>
+              <p className="text-xs leading-relaxed">
+                • <strong>Posición Casco Oculto (Hull-Down):</strong> Oculta el chasis en zanjas o montículos de tierra. Solo expón la torreta para disparar y retírate inmediatamente durante la recarga (8 segundos).
+              </p>
+              <p className="text-xs leading-relaxed">
+                • <strong>Caza de Tanques Pesados:</strong> Un Tiger I o Sherman 76 no pueden penetrarse frontalmente a media distancia con cañones ligeros. Requiere fuego cruzado buscando el anillo de la torreta o el compartimento del motor trasero.
+              </p>
+            </div>
+          )}
         </aside>
 
       </div>
 
-      {/* Actionable Military Directives POI Modal */}
+      {/* POI Modal */}
       {selectedPOI && (
         <POIModal
           poi={selectedPOI}
